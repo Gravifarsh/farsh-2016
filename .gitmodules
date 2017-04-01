@@ -1,0 +1,3 @@
+[submodule "board-src/farsh/librscs"]
+	path = board-src/farsh/librscs
+	url = ../../cansat-rsce/librscs.git
