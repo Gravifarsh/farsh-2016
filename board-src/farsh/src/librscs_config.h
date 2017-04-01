@@ -131,8 +131,8 @@ enum rscs_enum_ifaces {
 // ========================================================
 // Использовать ли буферизацию
 #define RSCS_UART_USEBUFFERS // Добавить код для поддержки циклических буферов в UART
-#define RSCS_UART_BUFSIZE_RX 50 // размер буфера на RX
-#define RSCS_UART_BUFSIZE_TX 50 // размер буфера на TX
+#define RSCS_UART_BUFSIZE_RX 100 // размер буфера на RX
+#define RSCS_UART_BUFSIZE_TX 200 // размер буфера на TX
 
 
 
