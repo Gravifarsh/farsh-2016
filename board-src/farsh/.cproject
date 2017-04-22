@@ -49,8 +49,8 @@
 								<option id="de.innot.avreclipse.cppcompiler.option.optimize.2070017759" name="Optimization Level" superClass="de.innot.avreclipse.cppcompiler.option.optimize" value="de.innot.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.linker.winavr.app.release.1770244338" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.app.release">
-								<option id="de.innot.avreclipse.linker.option.libpath.1070537966" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath" valueType="stringList"/>
-								<option id="de.innot.avreclipse.linker.option.libs.1808533662" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs" valueType="libs"/>
+								<option id="de.innot.avreclipse.linker.option.libpath.1070537966" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath"/>
+								<option id="de.innot.avreclipse.linker.option.libs.1808533662" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs"/>
 								<option id="de.innot.avreclipse.linker.option.nosyms.1771267837" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.linker.option.nosyms" value="false" valueType="boolean"/>
 								<inputType id="de.innot.avreclipse.tool.linker.input.523449324" name="OBJ Files" superClass="de.innot.avreclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -123,8 +123,8 @@
 								<option id="de.innot.avreclipse.cppcompiler.option.optimize.35283269" name="Optimization Level" superClass="de.innot.avreclipse.cppcompiler.option.optimize" value="de.innot.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.linker.winavr.app.release.316211816" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.app.release">
-								<option id="de.innot.avreclipse.linker.option.libpath.2095373741" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath" valueType="stringList"/>
-								<option id="de.innot.avreclipse.linker.option.libs.99910160" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs" valueType="libs"/>
+								<option id="de.innot.avreclipse.linker.option.libpath.2095373741" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath"/>
+								<option id="de.innot.avreclipse.linker.option.libs.99910160" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs"/>
 								<option id="de.innot.avreclipse.linker.option.nosyms.2125898635" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.linker.option.nosyms" value="false" valueType="boolean"/>
 								<inputType id="de.innot.avreclipse.tool.linker.input.2135996161" name="OBJ Files" superClass="de.innot.avreclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

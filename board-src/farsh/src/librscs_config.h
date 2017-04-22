@@ -11,6 +11,16 @@
 
 
 // ========================================================
+// Настройки модуля ADXL345
+// ========================================================
+// Настройка пина CS
+#define ADXL345_CS_DDR			DDRB	// регистр DDR порта, на котором расположен CS пин
+#define ADXL345_CS_PORT			PORTB	// регистр PORT порта, на котором расположен CS пин
+#define ADXL345_CS_PIN			4		// номер пина CS в порту
+
+
+
+// ========================================================
 // Установка режима debug (отладочные сообщения и т.д.)
 // Для включения раскомментируйте
 // ========================================================
@@ -26,17 +36,6 @@
 #define RSCS_GPS_UART_BAUD_RATE (9600)
 #define RSCS_GPS_UART_STOP_BITS (1)
 #define RSCS_GPS_UART_PARITY (RSCS_UART_PARITY_NONE)
-
-
-// ========================================================
-// Перечисление интерфейсов для возможности выбора там, где это надо
-// ========================================================
-enum rscs_enum_ifaces {
-	RSCS_IF_UART,
-	RSCS_IF_I2C,
-	RSCS_IF_SPI,
-};
-
 
 
 // ========================================================
@@ -77,9 +76,9 @@ enum rscs_enum_ifaces {
 // Если нет - модуль уходит на ожидание на еще один такт и процесс повторяется пока не будет
 // исчерпано заданное количество тактов ожидания
 // Длительность такта ожидания Таймаута на I2C операции (в микросекундах)
-#define RSCS_I2C_TIMEOUT_US		(100)
+#define RSCS_I2C_TIMEOUT_US		(400)
 // Количетво тактов ожидания таймаута на I2C операции
-#define RSCS_I2C_TIMEOUT_CYCLES	(5)
+#define RSCS_I2C_TIMEOUT_CYCLES	(200)
 
 
 
@@ -114,8 +113,8 @@ enum rscs_enum_ifaces {
 // Настройки зависят от микроконтроллера - это пины, на которые выведены каналы захвата-сравнения таймера 1
 #ifdef __AVR_ATmega328P__
 
-#define RSCS_SERVO_PORT (PORTC)
-#define RSCS_SERVO_PORT_DDR (DDRC)
+#define RSCS_SERVO_PORT (PORTB)
+#define RSCS_SERVO_PORT_DDR (DDRB)
 
 #elif defined __AVR_ATmega128__
 
@@ -131,18 +130,19 @@ enum rscs_enum_ifaces {
 // ========================================================
 // Использовать ли буферизацию
 #define RSCS_UART_USEBUFFERS // Добавить код для поддержки циклических буферов в UART
-#define RSCS_UART_BUFSIZE_RX 100 // размер буфера на RX
-#define RSCS_UART_BUFSIZE_TX 200 // размер буфера на TX
+#define RSCS_UART_BUFSIZE_RX 50 // размер буфера на RX
+#define RSCS_UART_BUFSIZE_TX 50 // размер буфера на TX
 
 
 
 // ========================================================
 // Настройки модуля BMP280
 // ========================================================
-//Выбор интерфейса обмена (SPI или I2C)
-#define RSCS_BMP280_IF SPI
+//Выбор интерфейса обмена (SPI или I2C) (раскомментируйте нужный)
+#define RSCS_BMP280_IF_I2C
+//#define RSCS_BMP280_IF_SPI
 
-#if RSCS_BMP280_IF == SPI
+#ifdef RSCS_BMP280_IF_SPI
 // Настройки пина CS
 #define RSCS_BMP280_CSDDR DDRB
 #define RSCS_BMP280_CSPORT PORTB
@@ -151,6 +151,16 @@ enum rscs_enum_ifaces {
 #define RSCS_BMP280_SPI_FREQ_kHz 64
 
 #endif //RSCS_BMP280_IF == SPI
+
+
+
+// ========================================================
+// Настройки модуля ADXL345
+// ========================================================
+// Настройка пина CS
+#define ADXL345_CS_DDR			DDRB	// регистр DDR порта, на котором расположен CS пин
+#define ADXL345_CS_PORT			PORTB	// регистр PORT порта, на котором расположен CS пин
+#define ADXL345_CS_PIN			4		// номер пина CS в порту
 
 
 
