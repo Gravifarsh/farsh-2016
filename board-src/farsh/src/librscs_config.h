@@ -76,7 +76,7 @@
 // Если нет - модуль уходит на ожидание на еще один такт и процесс повторяется пока не будет
 // исчерпано заданное количество тактов ожидания
 // Длительность такта ожидания Таймаута на I2C операции (в микросекундах)
-#define RSCS_I2C_TIMEOUT_US		(400)
+#define RSCS_I2C_TIMEOUT_US		(1500)
 // Количетво тактов ожидания таймаута на I2C операции
 #define RSCS_I2C_TIMEOUT_CYCLES	(200)
 
@@ -86,13 +86,13 @@
 // Настройки ONE_WIRE - модуля взаимодействия по ONEWIRE шине
 // ========================================================
 // Регистр PORT на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_PORT (PORTC)
+#define RSCS_ONEWIRE_REG_PORT (PORTA)
 // Регистр PIN на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_PIN  (PINC)
+#define RSCS_ONEWIRE_REG_PIN  (PINA)
 // Регистр DDR на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_DDR  (DDRC)
+#define RSCS_ONEWIRE_REG_DDR  (DDRA)
 // Битовая маска, задающая тот самый пин на порту
-#define RSCS_ONEWIRE_PIN_MASK (1 << 0)
+#define RSCS_ONEWIRE_PIN_MASK (1 << 2)
 
 
 

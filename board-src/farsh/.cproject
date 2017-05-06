@@ -126,6 +126,7 @@
 								<option id="de.innot.avreclipse.linker.option.libpath.2095373741" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath"/>
 								<option id="de.innot.avreclipse.linker.option.libs.99910160" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs"/>
 								<option id="de.innot.avreclipse.linker.option.nosyms.2125898635" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.linker.option.nosyms" value="false" valueType="boolean"/>
+								<option id="de.innot.avreclipse.linker.option.otherlinkargs.465777711" name="Other Arguments" superClass="de.innot.avreclipse.linker.option.otherlinkargs" value="-Wl,-u,vfprintf -lprintf_flt -lm" valueType="string"/>
 								<inputType id="de.innot.avreclipse.tool.linker.input.2135996161" name="OBJ Files" superClass="de.innot.avreclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -158,6 +159,8 @@
 		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/farsh"/>
 		</configuration>
+		<configuration configurationName="cansat"/>
+		<configuration configurationName="arduino-nano"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="scannerConfiguration">
