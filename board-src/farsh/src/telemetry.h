@@ -1,12 +1,7 @@
 #ifndef DESC_H_
 #define DESC_H_
 
-#include <rscs/ads1115.h>
-
-typedef struct {
-	rscs_ads1115_t * one;
-	rscs_ads1115_t * two;
-} ads_t;
+#include "all_includes.h"
 
 typedef struct {
 	uint16_t marker;
@@ -15,9 +10,15 @@ typedef struct {
 	int32_t pressure_bmp;
 	int32_t temperature_bmp;
 	int16_t temperature_ds;
-
+	int16_t lights[8];
+	int16_t accelerations[3];
 
 	uint32_t checksumm;
 } tel_t;
 
-#endif /* DESC_H_ */
+void send_packet();
+void update_packet();
+
+extern tel_t status;
+
+#endif
