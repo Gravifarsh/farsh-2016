@@ -86,11 +86,11 @@
 // Настройки ONE_WIRE - модуля взаимодействия по ONEWIRE шине
 // ========================================================
 // Регистр PORT на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_PORT (PORTA)
+#define RSCS_ONEWIRE_REG_PORT (PORTC)
 // Регистр PIN на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_PIN  (PINA)
+#define RSCS_ONEWIRE_REG_PIN  (PINC)
 // Регистр DDR на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_DDR  (DDRA)
+#define RSCS_ONEWIRE_REG_DDR  (DDRC)
 // Битовая маска, задающая тот самый пин на порту
 #define RSCS_ONEWIRE_PIN_MASK (1 << 2)
 
@@ -131,7 +131,7 @@
 // Использовать ли буферизацию
 #define RSCS_UART_USEBUFFERS // Добавить код для поддержки циклических буферов в UART
 #define RSCS_UART_BUFSIZE_RX 50 // размер буфера на RX
-#define RSCS_UART_BUFSIZE_TX 50 // размер буфера на TX
+#define RSCS_UART_BUFSIZE_TX 250 // размер буфера на TX
 
 
 

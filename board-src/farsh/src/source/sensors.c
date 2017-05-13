@@ -1,4 +1,4 @@
-#include <all_includes.h>
+#include "all_includes.h"
 #include "sensors.h"
 #include "telemetry.h"
 
@@ -10,11 +10,11 @@ ads_t ads;
 
 void ads_init()
 {
-	ads.one = rscs_ads1115_init(RSCS_ADS1115_ADDR_GND);
+	//ads.one = rscs_ads1115_init(RSCS_ADS1115_ADDR_GND);
 	ads.two = rscs_ads1115_init(RSCS_ADS1115_ADDR_VCC);
-	rscs_ads1115_set_range(ads.one, RSCS_ADS1115_RANGE_6DOT144);
+	//rscs_ads1115_set_range(ads.one, RSCS_ADS1115_RANGE_6DOT144));
 	rscs_ads1115_set_range(ads.two, RSCS_ADS1115_RANGE_6DOT144);
-	rscs_ads1115_set_datarate(ads.one, RSCS_ADS1115_DATARATE_32SPS);
+	//rscs_ads1115_set_datarate(ads.one, RSCS_ADS1115_DATARATE_32SPS);
 	rscs_ads1115_set_datarate(ads.two, RSCS_ADS1115_DATARATE_32SPS);
 }
 
@@ -78,7 +78,10 @@ void adxl_request()
 
 void ads_request()
 {
-
+	for(int i = 0; i < 4; i++){
+		//rscs_ads1115_take(ads.one, i + 4, status.lights + i);
+		rscs_ads1115_take(ads.two, i + 4, status.lights + i + 4);
+	}
 }
 
 

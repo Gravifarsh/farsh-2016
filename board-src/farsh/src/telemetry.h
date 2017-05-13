@@ -13,11 +13,12 @@ typedef struct {
 	int16_t lights[8];
 	int16_t accelerations[3];
 
-	uint32_t checksumm;
+	uint8_t checksumm;
 } tel_t;
 
+int init_uart_radio();
 void send_packet();
-void update_packet();
+void update_status();
 
 extern tel_t status;
 
