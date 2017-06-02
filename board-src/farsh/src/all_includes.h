@@ -10,6 +10,7 @@
 #include <util/delay.h>
 
 #include <rscs/adc.h>
+#include <rscs/ina219.h>
 #include <rscs/onewire.h>
 #include <rscs/servo.h>
 #include <rscs/ads1115.h>
