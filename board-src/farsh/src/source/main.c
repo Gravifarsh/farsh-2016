@@ -30,7 +30,11 @@ int main()
 
 	hardware_init();
 
-	get_pressnlight(&status.check.press,&status.check.light,5);
+	for(int i = 0; i < STAT_BUFF_S; i++){
+		update_status();
+	}
+
+	get_pressnlight_normalized(&status.check.press,&status.check.light);
 
 	while(true)
 	{
@@ -38,22 +42,23 @@ int main()
 		send_packet();
 		switch(status.mode){
 			case MODE_STARTED:
-				get_pressnlight(&status.check.press_t,&status.check.light_t,3);
+				get_pressnlight_normalized(&status.check.press_t,&status.check.light_t);
 				if(true){ //CONDITION GOES HERE TODO
-					get_pressnlight(&status.check.press,&status.check.light,5);
+					get_pressnlight_normalized(&status.check.press,&status.check.light);
 					status.mode = MODE_IN_ROCKET;
 				}
 			break;
 
 			case MODE_IN_ROCKET:
-				get_pressnlight(&status.check.press_t,&status.check.light_t,3);
+				get_pressnlight_normalized(&status.check.press_t,&status.check.light_t);
 				if(true){ //CONDITION GOES HERE TODO
+					//FIRE-RAISER GOES HERE TODO
 					status.mode = MODE_FLYING;
 				}
 			break;
 
 			case MODE_FLYING:
-				get_pressnlight(&status.check.press_t,&status.check.light_t,3);
+				get_pressnlight_normalized(&status.check.press_t,&status.check.light_t);
 				if(true){ //CONDITION GOES HERE TODO
 					status.mode = MODE_LANDED;
 				}

@@ -10,13 +10,12 @@ static rscs_uart_bus_t * radio_uart;
 static rscs_uart_bus_t *uart1;
 
 status_t status = {
-		.bmp.press = 0,
-		.bmp.temp = 0,
-		.ds.temp = 0,
-		.ads.lights = {0},
-		.adxl.x = 0,
-		.adxl.y = 0,
-		.adxl.z = 0,
+		.err.bmp = 0,
+		.err.ds = 0,
+		.err.ads1 = 0,
+		.err.ads2 = 0,
+		.err.adxl = 0,
+		.err.ina = 0
 };
 
 tel_t packet = {
@@ -62,7 +61,18 @@ int init_uart_radio()
 
 void comrade()
 {
-
+	char val;
+	if(rscs_uart_read_some(uart1, &val,1) == 1)
+	{
+		switch(val){
+			case 'P':
+				rscs_uart_read(uart1, &status.check.p_k,sizeof(status.check.p_k));
+				break;
+			case 'L':
+				rscs_uart_read(uart1, &status.check.l_k,sizeof(status.check.l_k));
+				break;
+		}
+	}
 }
 
 void update_status()
@@ -76,19 +86,26 @@ void update_status()
 void send_packet()
 {
 	packet.number++;
-	packet.accelerations[0] = status.adxl.x;
-	packet.accelerations[1] = status.adxl.y;
-	packet.accelerations[2] = status.adxl.z;
+	packet.accelerations[0] = status.adxl[0].x;
+	packet.accelerations[1] = status.adxl[0].y;
+	packet.accelerations[2] = status.adxl[0].z;
 	for(int i = 0; i < 8; i++){
-		packet.lights[i] = status.ads.lights[i];
+		packet.lights[i] = status.ads[0].lights[i];
 	}
 	for(int i = 0; i < 3; i++){
 		packet.servo_pos[i] = status.servo.pos[i];
 	}
-	packet.press_b = status.bmp.press;
-	packet.temp_b = status.bmp.temp;
-	packet.temp_ds = status.ds.temp;
-	packet.power = status.ina.power;
+	packet.press_b = status.bmp[0].press;
+	packet.temp_b = status.bmp[0].temp;
+	packet.temp_ds = status.ds[0].temp;
+	packet.power = status.ina[0].power;
+
+	packet.e_ads1 = status.err.ads1;
+	packet.e_ads2 = status.err.ads2;
+	packet.e_adxl = status.err.adxl;
+	packet.e_bmp = status.err.bmp;
+	packet.e_ds = status.err.ds;
+	packet.e_ina = status.err.ina;
 	packet.checksum = rscs_crc8(&packet, sizeof(packet));
 	rscs_uart_write(radio_uart,&status,sizeof(packet));
 }

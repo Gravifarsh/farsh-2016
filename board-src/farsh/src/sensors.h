@@ -4,7 +4,7 @@
 
 #include "all_includes.h"
 
-void get_pressnlight(uint32_t* press,uint16_t* light, uint8_t n);
+void get_pressnlight_normalized(uint32_t* press,uint16_t* light);
 
 void bmp_request();
 void ds_request();

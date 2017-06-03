@@ -8,7 +8,7 @@ void servo_oriantate()
 	int32_t res[8];
 	double x=0, y=0;
 	for(int i = 0; i < 8; i++){
-		res[i] = status.ads.lights[i];
+		res[i] = status.ads[0].lights[i];//TODO
 	}
 	for(int i = 0; i < 8; i++)
 	{
@@ -16,4 +16,5 @@ void servo_oriantate()
 		y += res[i] * sin(i * 45 * 3.14159265359 / 180);
 	}
 	rscs_servo_set_angle(0,atan(y / x) * 180 / 3.14159265359 + 90);
+
 }
