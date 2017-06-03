@@ -61,6 +61,7 @@ int init_uart_radio()
 
 void comrade()
 {
+	// NOTE: Василий: нужны пояснения. Я не понял что тут происходит
 	char val;
 	if(rscs_uart_read_some(uart1, &val,1) == 1)
 	{
