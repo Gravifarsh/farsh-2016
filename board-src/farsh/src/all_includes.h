@@ -18,6 +18,7 @@
 #include <rscs/stdext/stdio.h>
 #include <rscs/bmp280.h>
 #include <rscs/ds18b20.h>
-#include <rscs/adxl345.h>
+#include <adxl345.h>
+#include <rscs/spi.h>
 
 #endif

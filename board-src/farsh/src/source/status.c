@@ -78,9 +78,9 @@ void comrade()
 void update_status()
 {
 	bmp_request();
-	ds_request();
-	adxl_request();
-	ads_request();
+	//ds_request();
+	//adxl_request();
+	//ads_request();
 }
 
 void send_packet()

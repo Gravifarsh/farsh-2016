@@ -47,7 +47,7 @@ void ina_init()
 
 void bmp_init()
 {
-	if(!bmp_desc){bmp_desc = rscs_bmp280_initi2c(RSCS_BMP280_I2C_ADDR_HIGH);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
+	if(!bmp_desc){ bmp_desc = rscs_bmp280_initspi(&PORTB, &DDRB, 5);}   // А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
 
 	rscs_bmp280_parameters_t param;
 	param.filter = RSCS_BMP280_FILTER_X16;
@@ -60,10 +60,11 @@ void bmp_init()
 
 void adxl_init()
 {
-	if(!adxl_desc){adxl_desc = rscs_adxl345_initi2c(RSCS_ADXL345_ADDR_MAIN);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
+	if(!adxl_desc){adxl_desc = rscs_adxl345_init(2);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ? TODO
 
-	WADDUP(rscs_adxl345_set_rate(adxl_desc,RSCS_ADXL345_RATE_200HZ), status.err.adxl);
-	WADDUP(rscs_adxl345_set_range(adxl_desc,RSCS_ADXL345_RANGE_2G), status. err.adxl);
+	WADDUP(rscs_adxl345_startup(adxl_desc), status.err.adxl);
+	rscs_adxl345_set_rate(adxl_desc,RSCS_ADXL345_RATE_200HZ);
+	rscs_adxl345_set_range(adxl_desc,RSCS_ADXL345_RANGE_2G);
 }
 
 void ds_init()
@@ -98,7 +99,7 @@ void bmp_request()
 	rscs_bmp280_read(bmp_desc,&rpress,&rtemp);
 	rscs_bmp280_calculate(rscs_bmp280_get_calibration_values(bmp_desc),rpress,rtemp,&press,&temp);
 	status.bmp[0].press = press;
-	status.bmp[0].temp = temp;//TODO
+	status.bmp[0].temp = temp;
 }
 
 void ds_request()

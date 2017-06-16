@@ -3,33 +3,9 @@
 #include <math.h>
 #include <util/delay.h>
 
-#include "../../librscs/rscs/i2c.h"
-#include "../../librscs/rscs/spi.h"
+//#include "../../librscs/rscs/spi.h"
 #include "../../librscs/rscs/error.h"
-#include "../../librscs/rscs/adxl345.h"
-
-
-//TODO: ADXL: заготовка для неосновных параметров
-/*typedef struct {
-	int8_t offset_x, offset_y, offset_z; / * Смещение, добавляемое к резульатам
-											измерения (для калибровки, например)
-											(15.6 mg/LSB)* /
-
-
-
-	// Настройки событий TAP и DOUBLE_TAP (подробнее в даташите)
-	uint8_t tap_threshold, 	/ * Значение ускорение, при котором сработает
-							 * событие TAP (если включено)
-							 * (62.5 mg/LSB)* /
-	tap_duration, / *Сколько времени ускорение должо быть выше tap_threshold,
-					чтобы вызвать событие TAP (625μs/LSB)* /
-	tap_double_latent, 	/ * Время между событием TAP и началом окна, во время
-						   которого можно сгенерировать DOUBLE_TAP (1.25 ms/LSB)* /
-	tap_double_window; / * Продолжительность окна, в которое событие DOUBLE_TAP
-						  может быть сгенерировано (1.25 ms/LSB)* /
-
-} rscs_adxl345_settings_t;*/
-
+#include "../adxl345.h"
 
 /* Команды на чтение и запись */
 #define RSCS_ADXL345_SPI_READ        (1 << 7)	//бит на чтение
@@ -90,20 +66,17 @@
 #define RSCS_ADXL345_SCALE_FACTOR    		0.0039
 #define RSCS_ADXL345_OFFSET_SCALE_FACTOR		15.6
 
-#define GOTO_END_IF_ERROR(X) if ((error = (X)) != RSCS_E_NONE) goto end;
-
-
 // описание стурктуры дескриптора
 struct rscs_adxl345_t
 {
 	rscs_adxl345_range_t range;
-	rscs_adxl345_addr_t addr;
+	uint8_t pin_n;
 };
 
 
 /*******СЛУЖЕБНЫЕ ФУНКЦИИ*******/
 
-#define SSPI_PORT PORTB
+#define SSPI_PORT PORTB // TODO: заменить на другой пин
 #define SSPI_DDR DDRB
 #define SSPI_PIN PINB
 #define SSPI_MISO (3)
@@ -118,6 +91,19 @@ struct rscs_adxl345_t
 //#define RSCS_SPI_SCK	(1)
 //#define RSCS_SPI_SS		(0)
 
+
+rscs_adxl345_t* rscs_adxl345_init(uint8_t pin_n)
+{
+	rscs_adxl345_t* retval = (rscs_adxl345_t*)malloc(sizeof(rscs_adxl345_t));
+
+	if(!retval) return NULL;
+
+	retval->pin_n = pin_n;
+	SSPI_PORT &= ~(1<<retval->pin_n);
+	SSPI_PORT |= (1<<retval->pin_n);
+
+	return retval;
+}
 
 static uint8_t _spixfer(uint8_t data) {
   uint8_t reply = 0;
@@ -135,147 +121,90 @@ static uint8_t _spixfer(uint8_t data) {
   return reply;
 }
 
-
-/*ЧТЕНИЕ ЗНАЧЕНИЯ ИЗ РЕГИСТРА*/
-rscs_e rscs_adxl345_getRegisterValue(rscs_adxl345_t * device, uint8_t registerAddress, uint8_t * read_data)
+void rscs_adxl345_getRegisterValue(rscs_adxl345_t * device, uint8_t registerAddress,
+		void * buffer_, size_t buffer_size)
 {
-	rscs_e error = RSCS_E_NONE;
-	SSPI_PORT &= ~(1<<SSPI_CS);
-	_spixfer((1<<8) | registerAddress);
-	*read_data = _spixfer(0);
-	SSPI_PORT |= (1<<SSPI_CS);
-	/*GOTO_END_IF_ERROR(rscs_i2c_start());
-	GOTO_END_IF_ERROR(rscs_i2c_send_slaw(device->addr, rscs_i2c_slaw_write));
-	GOTO_END_IF_ERROR(rscs_i2c_write_byte(registerAddress));
-	GOTO_END_IF_ERROR(rscs_i2c_start());
-	GOTO_END_IF_ERROR(rscs_i2c_send_slaw(device->addr, rscs_i2c_slaw_read));
-	GOTO_END_IF_ERROR(rscs_i2c_read(read_data, 1, 1));
-end:
-	rscs_i2c_stop()*/
-    return error;
+	uint8_t * buffer = (uint8_t *)buffer_;
+
+	SSPI_PORT &= ~(1<<device->pin_n);
+
+	_spixfer((3<<6) | registerAddress); //ЧИТАЕМ ПРОДОЛЖИТЕЛДЬНО
+	for (size_t i = 0; i < buffer_size; i++)
+		buffer[i] = _spixfer(0xFF);
+
+	SSPI_PORT |= (1<<device->pin_n);
 }
 
-
-/*ЗАПИСЬ ЗНАЧЕНИЯ В РЕГИСТР*/
-rscs_e rscs_adxl345_setRegisterValue(rscs_adxl345_t * device, uint8_t registerAddress, uint8_t registerValue)
+void rscs_adxl345_setRegisterValue(rscs_adxl345_t * device, uint8_t registerAddress, uint8_t registerValue)
 {
-	rscs_e error = RSCS_E_NONE;
-	SSPI_PORT &= ~(1<<SSPI_CS);
+	SSPI_PORT &= ~(1<<device->pin_n);
+
 	_spixfer(registerAddress);
 	_spixfer(registerValue);
-	SSPI_PORT |= (1<<SSPI_CS);
-	/*GOTO_END_IF_ERROR(rscs_i2c_start());
-	GOTO_END_IF_ERROR(rscs_i2c_send_slaw(device->addr, rscs_i2c_slaw_write));
-	GOTO_END_IF_ERROR(rscs_i2c_write_byte(registerAddress));
-	GOTO_END_IF_ERROR(rscs_i2c_write_byte(registerValue));
-end:
-	rscs_i2c_stop();*/
-    return error;
+
+	SSPI_PORT |= (1<<device->pin_n);
 }
-
-
-/*******ФУНКЦИИ УПРАВЛЕНИЯ*******/
-
-rscs_adxl345_t * rscs_adxl345_initi2c(rscs_i2c_addr_t addr) {
- 	// создаем дескриптор
-	rscs_adxl345_t * retval = (rscs_adxl345_t *)malloc(sizeof(rscs_adxl345_t));
-	if (!retval)
-		return retval;
-
-	// и инициализируем
-	// TODO: ADXL: Вынести первичную инициализицию в функцию startup, чтобы оттуда можно было
-	// вернуть код ошибки
-	retval->addr = addr;
-	retval->range = RSCS_ADXL345_RANGE_2G;		//диапазон 2g (по умолчанию)
-
-	return retval;
-}
-
 
 rscs_e rscs_adxl345_startup(rscs_adxl345_t * adxl) {
 	uint8_t devid = 0;
-	rscs_e error = RSCS_E_NONE;
-	GOTO_END_IF_ERROR(rscs_adxl345_getRegisterValue(adxl, 0x00, &devid))
+	rscs_adxl345_getRegisterValue(adxl, 0x00, &devid,1);
 
 	if(devid !=  229)  {
 		return RSCS_E_INVRESP;
 	}
 
 	//смещение по осям XYZ равно 0 (по умолчанию)
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_OFSX, 0));
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_OFSY, 0));
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_OFSZ, 0));
+	rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_OFSX, 0);
+	rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_OFSY, 0);
+	rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_OFSZ, 0);
 	//LOW_POWER off, 100Гц (по умолчанию)
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_BW_RATE,
-			RSCS_ADXL345_RATE_100HZ));
+	rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_BW_RATE, RSCS_ADXL345_RATE_100HZ);
 
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_DATA_FORMAT,
+	rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_DATA_FORMAT,
 			adxl->range			// диапазон
 			| RSCS_ADXL345_FULL_RES	// FULL_RES = 1 (для всех диапазонов использовать максимальное разрешение 4 mg/lsb)
-	));
-
-	//rscs_adxl345_setRegisterValue(adxl, ADXL345_INT_ENABLE,		ADXL345_INT_ENABLE_DATA);	//смотри librscs_config.h
-	//rscs_adxl345_setRegisterValue(adxl, ADXL345_INT_MAP,		ADXL345_INT_MAP_DA(retval->interface << 6)TA);		//смотри librscs_config.h
-	//rscs_adxl345_setRegisterValue(adxl, ADXL345_FIFO_CTL,		ADXL345_FIFO_CTL_DATA);		//смотри librscs_config.h
-
+	);
 	//переводит акселерометр из режима ожидания в режим измерения
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_POWER_CTL,	RSCS_ADXL345_PCTL_MEASURE));
-
-end:
-
-	return error;
+	rscs_adxl345_setRegisterValue(adxl, RSCS_ADXL345_POWER_CTL,	RSCS_ADXL345_PCTL_MEASURE);
+	return RSCS_E_NONE;
 }
 
 
 void rscs_adxl345_deinit(rscs_adxl345_t * device)
 {
-	// TODO: ADXL: напимер усыпляем акселерометр, чтобы не потреблял электричество
-	// если не лень это писать конечно
-
-	// освобождем память, занимаемую дескриптором
 	free(device);
 }
 
 
 /* УСТАНОВКА ПРЕДЕЛОВ ИЗМЕРЕНИЙ*/
-rscs_e rscs_adxl345_set_range(rscs_adxl345_t * device, rscs_adxl345_range_t range)
+void rscs_adxl345_set_range(rscs_adxl345_t * device, rscs_adxl345_range_t range)
 {
-	rscs_e error = RSCS_E_NONE;
 	uint8_t data = 0;
 
-	GOTO_END_IF_ERROR(rscs_adxl345_getRegisterValue(device, RSCS_ADXL345_DATA_FORMAT, &data));
+	rscs_adxl345_getRegisterValue(device, RSCS_ADXL345_DATA_FORMAT, &data, 1);
 	data &= ~( (1 << 1) | 1 );			//очищаем 2 младших бита регистра BW_RATE
 	data |= RSCS_ADXL345_RANGE(range);	//и записываем новое значение
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_DATA_FORMAT, data));
+	rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_DATA_FORMAT, data);
 
 	device->range = range;
-
-end:
-	return error;
 }
 
 
 /* УСТАНОВКА ЧАСТОТЫ ИЗМЕРЕНИЙ*/
-rscs_e rscs_adxl345_set_rate(rscs_adxl345_t * device, rscs_adxl345_rate_t rate)
+void rscs_adxl345_set_rate(rscs_adxl345_t * device, rscs_adxl345_rate_t rate)
 {
-	rscs_e error = RSCS_E_NONE;
 	uint8_t data = 0;
 
-	GOTO_END_IF_ERROR(rscs_adxl345_getRegisterValue(device, RSCS_ADXL345_BW_RATE, &data));
+	rscs_adxl345_getRegisterValue(device, RSCS_ADXL345_BW_RATE, &data, 1);
 	data &= ~(0xF);						//очищаем 4 младших бита регистра BW_RATE
 	data |= RSCS_ADXL345_RATE(rate);	//и записываем новое значение
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_BW_RATE, data));
-
-end:
-	return error;
+	rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_BW_RATE, data);
 }
 
 
 /* УСТАНОВКА СМЕЩЕНИЯ РЕЗУЛЬТАТОВ ПО ОСЯМ X, Y, Z*/
-rscs_e rscs_adxl345_set_offset(rscs_adxl345_t * device, float mg_x, float mg_y, float mg_z)
+void rscs_adxl345_set_offset(rscs_adxl345_t * device, float mg_x, float mg_y, float mg_z)
 {
-	rscs_e error = RSCS_E_NONE;
-
 	int8_t ofs_x;
 	int8_t ofs_y;
 	int8_t ofs_z;
@@ -284,35 +213,23 @@ rscs_e rscs_adxl345_set_offset(rscs_adxl345_t * device, float mg_x, float mg_y, 
 	ofs_y = (int8_t) round(mg_y / RSCS_ADXL345_OFFSET_SCALE_FACTOR);
 	ofs_z = (int8_t) round(mg_z / RSCS_ADXL345_OFFSET_SCALE_FACTOR);
 
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_OFSX, ofs_x));
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_OFSX, ofs_y));
-	GOTO_END_IF_ERROR(rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_OFSX, ofs_z));
+	rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_OFSX, ofs_x);
+	rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_OFSX, ofs_y);
+	rscs_adxl345_setRegisterValue(device, RSCS_ADXL345_OFSX, ofs_z);
 
-end:
-	return error;
 }
 
 
 /* ЧТЕНИЕ ДАННЫХ ADXL345 В БИНАРНОМ ВИДЕ*/
-rscs_e rscs_adxl345_read(rscs_adxl345_t * device, int16_t * x, int16_t * y, int16_t * z)
+void rscs_adxl345_read(rscs_adxl345_t * device, int16_t * x, int16_t * y, int16_t * z)
 {
-	rscs_e error = RSCS_E_NONE;
 	uint8_t readBuffer[6]   = {0};
 
-	GOTO_END_IF_ERROR(rscs_i2c_start());
-	GOTO_END_IF_ERROR(rscs_i2c_send_slaw(device->addr, rscs_i2c_slaw_write));
-	GOTO_END_IF_ERROR(rscs_i2c_write_byte(RSCS_ADXL345_DATAX0));
-	GOTO_END_IF_ERROR(rscs_i2c_start());
-	GOTO_END_IF_ERROR(rscs_i2c_send_slaw(device->addr, rscs_i2c_slaw_read));
-	GOTO_END_IF_ERROR(rscs_i2c_read(readBuffer, sizeof(readBuffer), 1));
+	rscs_adxl345_getRegisterValue(device,RSCS_ADXL345_DATAX0,readBuffer,6);
 
 	*x = (readBuffer[1] << 8) | readBuffer[0];
 	*y = (readBuffer[3] << 8) | readBuffer[2];
 	*z = (readBuffer[5] << 8) | readBuffer[4];
-
-end:
-	rscs_i2c_stop();
-	return error;
 }
 
 
@@ -336,16 +253,12 @@ void rscs_adxl345_cast_to_G(rscs_adxl345_t * device, int16_t x, int16_t y, int16
 }
 
 
-rscs_e rscs_adxl345_GetGXYZ(rscs_adxl345_t * device, int16_t* x, int16_t* y, int16_t* z, float* x_g, float* y_g, float* z_g)
+void rscs_adxl345_GetGXYZ(rscs_adxl345_t * device, int16_t* x, int16_t* y, int16_t* z, float* x_g, float* y_g, float* z_g)
 {
 	*x = 0;
 	*y = 0;
 	*z = 0;
 
-	rscs_e error = rscs_adxl345_read(device, x, y, z);
-	if(error != RSCS_E_NONE) return error;
-
+	rscs_adxl345_read(device, x, y, z);
 	rscs_adxl345_cast_to_G(device, *x, *y, *z, x_g, y_g, z_g);
-
-	return error;
 }
