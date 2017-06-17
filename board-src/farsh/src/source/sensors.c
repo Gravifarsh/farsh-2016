@@ -47,24 +47,25 @@ void ina_init()
 
 void bmp_init()
 {
-	if(!bmp_desc){ bmp_desc = rscs_bmp280_initspi(&PORTB, &DDRB, 5);}   // А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
+	if(!bmp_desc){bmp_desc = rscs_bmp280_initspi(&PORTB, &DDRB, 5);}   // А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
 
 	rscs_bmp280_parameters_t param;
 	param.filter = RSCS_BMP280_FILTER_X16;
 	param.pressure_oversampling = RSCS_BMP280_OVERSAMPLING_X16;
 	param.temperature_oversampling = RSCS_BMP280_OVERSAMPLING_X16;
 	param.standbytyme = RSCS_BMP280_STANDBYTIME_125MS;
+
 	WADDUP(rscs_bmp280_setup(bmp_desc, &param), status.err.bmp);
 	WADDUP(rscs_bmp280_changemode(bmp_desc,RSCS_BMP280_MODE_NORMAL), status.err.bmp);
 }
 
 void adxl_init()
 {
-	if(!adxl_desc){adxl_desc = rscs_adxl345_init(2);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ? TODO
+	if(!adxl_desc){adxl_desc = rscs_adxl345_initspi(4);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ? TODO
 
 	WADDUP(rscs_adxl345_startup(adxl_desc), status.err.adxl);
-	rscs_adxl345_set_rate(adxl_desc,RSCS_ADXL345_RATE_200HZ);
-	rscs_adxl345_set_range(adxl_desc,RSCS_ADXL345_RANGE_2G);
+	rscs_adxl345_set_rate(adxl_desc, RSCS_ADXL345_RATE_200HZ);
+	rscs_adxl345_set_range(adxl_desc, RSCS_ADXL345_RANGE_2G);
 }
 
 void ds_init()
@@ -132,7 +133,7 @@ void adxl_request()
 
 	int16_t x,y,z;
 	rscs_adxl345_read(adxl_desc,&x,&y,&z);
-	status.adxl[0].x = x;//TODO
+	status.adxl[0].x = x;
 	status.adxl[0].y = y;
 	status.adxl[0].z = z;
 }

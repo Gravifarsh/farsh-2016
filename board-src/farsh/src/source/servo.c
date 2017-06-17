@@ -16,5 +16,4 @@ void servo_oriantate()
 		y += res[i] * sin(i * 45 * 3.14159265359 / 180);
 	}
 	rscs_servo_set_angle(0,atan(y / x) * 180 / 3.14159265359 + 90);
-
 }

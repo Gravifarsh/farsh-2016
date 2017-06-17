@@ -9,15 +9,15 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="de.innot.avreclipse.buildArtefactType.app" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.innot.avreclipse.buildArtefactType.app,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" description="" id="de.innot.avreclipse.configuration.app.release.1312652966" name="cansat" parent="de.innot.avreclipse.configuration.app.release">
+				<configuration artifactName="${ProjName}" buildArtefactType="de.innot.avreclipse.buildArtefactType.app" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=de.innot.avreclipse.buildArtefactType.app" description="" id="de.innot.avreclipse.configuration.app.release.1312652966" name="cansat" parent="de.innot.avreclipse.configuration.app.release">
 					<folderInfo id="de.innot.avreclipse.configuration.app.release.1312652966." name="/" resourcePath="">
 						<toolChain id="de.innot.avreclipse.toolchain.winavr.app.release.174060391" name="AVR-GCC Toolchain" superClass="de.innot.avreclipse.toolchain.winavr.app.release">
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.888921260" name="Generate HEX file for Flash memory" superClass="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release"/>
@@ -52,6 +52,7 @@
 								<option id="de.innot.avreclipse.linker.option.libpath.1070537966" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath"/>
 								<option id="de.innot.avreclipse.linker.option.libs.1808533662" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs"/>
 								<option id="de.innot.avreclipse.linker.option.nosyms.1771267837" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.linker.option.nosyms" value="false" valueType="boolean"/>
+								<option id="de.innot.avreclipse.linker.option.otherlinkargs.293901540" superClass="de.innot.avreclipse.linker.option.otherlinkargs" value="-Wl,-u,vfprintf -lprintf_flt -lm -Wl,--gc-sections" valueType="string"/>
 								<inputType id="de.innot.avreclipse.tool.linker.input.523449324" name="OBJ Files" superClass="de.innot.avreclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -83,15 +84,15 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="de.innot.avreclipse.buildArtefactType.app" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.innot.avreclipse.buildArtefactType.app,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" description="" id="de.innot.avreclipse.configuration.app.release.1312652966.2059767413" name="arduino-nano" parent="de.innot.avreclipse.configuration.app.release">
+				<configuration artifactName="${ProjName}" buildArtefactType="de.innot.avreclipse.buildArtefactType.app" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=de.innot.avreclipse.buildArtefactType.app" description="" id="de.innot.avreclipse.configuration.app.release.1312652966.2059767413" name="arduino-nano" parent="de.innot.avreclipse.configuration.app.release">
 					<folderInfo id="de.innot.avreclipse.configuration.app.release.1312652966.2059767413." name="/" resourcePath="">
 						<toolChain id="de.innot.avreclipse.toolchain.winavr.app.release.1863933190" name="AVR-GCC Toolchain" superClass="de.innot.avreclipse.toolchain.winavr.app.release">
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.113833523" name="Generate HEX file for Flash memory" superClass="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release"/>
@@ -126,7 +127,7 @@
 								<option id="de.innot.avreclipse.linker.option.libpath.2095373741" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath"/>
 								<option id="de.innot.avreclipse.linker.option.libs.99910160" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs"/>
 								<option id="de.innot.avreclipse.linker.option.nosyms.2125898635" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.linker.option.nosyms" value="false" valueType="boolean"/>
-								<option id="de.innot.avreclipse.linker.option.otherlinkargs.465777711" name="Other Arguments" superClass="de.innot.avreclipse.linker.option.otherlinkargs" value="-Wl,-u,vfprintf -lprintf_flt -lm" valueType="string"/>
+								<option id="de.innot.avreclipse.linker.option.otherlinkargs.465777711" name="Other Arguments" superClass="de.innot.avreclipse.linker.option.otherlinkargs" value="-Wl,-u,vfprintf -lprintf_flt -lm -Wl,--gc-sections" valueType="string"/>
 								<inputType id="de.innot.avreclipse.tool.linker.input.2135996161" name="OBJ Files" superClass="de.innot.avreclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

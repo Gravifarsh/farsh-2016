@@ -1,7 +1,9 @@
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <util/delay.h>
+#include <rscs/spi.h>
 
 //#include "../../librscs/rscs/spi.h"
 #include "../../librscs/rscs/error.h"
@@ -76,7 +78,7 @@ struct rscs_adxl345_t
 
 /*******СЛУЖЕБНЫЕ ФУНКЦИИ*******/
 
-#define SSPI_PORT PORTB // TODO: заменить на другой пин
+#define SSPI_PORT PORTB
 #define SSPI_DDR DDRB
 #define SSPI_PIN PINB
 #define SSPI_MISO (3)
@@ -92,55 +94,45 @@ struct rscs_adxl345_t
 //#define RSCS_SPI_SS		(0)
 
 
-rscs_adxl345_t* rscs_adxl345_init(uint8_t pin_n)
+rscs_adxl345_t* rscs_adxl345_initspi(uint8_t pin_n)
 {
 	rscs_adxl345_t* retval = (rscs_adxl345_t*)malloc(sizeof(rscs_adxl345_t));
 
 	if(!retval) return NULL;
 
 	retval->pin_n = pin_n;
+
+	SSPI_DDR |= (1<<retval->pin_n);
 	SSPI_PORT &= ~(1<<retval->pin_n);
+	_delay_ms(10);
 	SSPI_PORT |= (1<<retval->pin_n);
 
 	return retval;
-}
-
-static uint8_t _spixfer(uint8_t data) {
-  uint8_t reply = 0;
-  for (int i=7; i>=0; i--) {
-    reply <<= 1;
-    SSPI_PORT &= ~(1 << SSPI_CLK);
-    if(data & (1<<i)) SSPI_PORT |= (1 << SSPI_MOSI);
-    else SSPI_PORT &= ~(1 << SSPI_MOSI);
-    _delay_us(10);
-    SSPI_PORT |= (1 << SSPI_CLK);
-    if (SSPI_PIN & (1 << SSPI_MISO))
-      reply |= 1;
-    _delay_us(10);
-  }
-  return reply;
 }
 
 void rscs_adxl345_getRegisterValue(rscs_adxl345_t * device, uint8_t registerAddress,
 		void * buffer_, size_t buffer_size)
 {
 	uint8_t * buffer = (uint8_t *)buffer_;
+	if(buffer_size - 1){registerAddress |= (3<<6);}
+	else{registerAddress |= (1<<7);}
 
 	SSPI_PORT &= ~(1<<device->pin_n);
 
-	_spixfer((3<<6) | registerAddress); //ЧИТАЕМ ПРОДОЛЖИТЕЛДЬНО
-	for (size_t i = 0; i < buffer_size; i++)
-		buffer[i] = _spixfer(0xFF);
+	rscs_spi_write(&registerAddress,1);
+	rscs_spi_read(buffer, buffer_size, 0xFF);
 
 	SSPI_PORT |= (1<<device->pin_n);
 }
 
 void rscs_adxl345_setRegisterValue(rscs_adxl345_t * device, uint8_t registerAddress, uint8_t registerValue)
 {
+	registerAddress &= ~(1<<7);
+
 	SSPI_PORT &= ~(1<<device->pin_n);
 
-	_spixfer(registerAddress);
-	_spixfer(registerValue);
+	rscs_spi_write(&registerAddress, 1);
+	rscs_spi_write(&registerValue, 1);
 
 	SSPI_PORT |= (1<<device->pin_n);
 }
@@ -233,20 +225,8 @@ void rscs_adxl345_read(rscs_adxl345_t * device, int16_t * x, int16_t * y, int16_
 }
 
 
-void rscs_adxl345_cast_to_G(rscs_adxl345_t * device, int16_t x, int16_t y, int16_t z, float * x_g, float * y_g, float * z_g) {
-	/*uint8_t  range = 1;
-
-	range = (1 << device->range);
-
-	if(x >> 9) *x_g = -(float)(!x + 1);	//если 10-й бит равен 1, то число отрицательное
-	if(x >> 9) *y_g = -(float)(!y + 1);
-	if(x >> 9) *z_g = -(float)(!z + 1);
-
-	*x_g = (*x_g) * RSCS_ADXL345_SCALE_FACTOR * range;
-	*y_g = (*y_g) * RSCS_ADXL345_SCALE_FACTOR * range;
-	*z_g = (*z_g) * RSCS_ADXL345_SCALE_FACTOR * range;*/
-
-	// FIXME: ADXL: это код не похож на правильный
+void rscs_adxl345_cast_to_G(rscs_adxl345_t * device, int16_t x, int16_t y, int16_t z,
+		float * x_g, float * y_g, float * z_g) {
 	*x_g = x * 0.004f;
 	*y_g = y * 0.004f;
 	*z_g = z * 0.004f;

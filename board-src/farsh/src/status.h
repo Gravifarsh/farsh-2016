@@ -9,7 +9,7 @@ typedef struct {
 	uint16_t marker;
 	uint16_t number;
 
-	uint32_t press_b;
+	int32_t press_b;
 	int32_t temp_b;
 	int16_t temp_ds;
 	uint16_t power;
@@ -17,15 +17,20 @@ typedef struct {
 	int16_t accelerations[3];
 	uint8_t servo_pos[3];
 
-	uint32_t e_bmp:3,e_ds:3,e_adxl:3,e_ads1:3,e_ads2:3,e_ina:3;
+	int16_t e_bmp;
+	int16_t e_ds;
+	int16_t e_adxl;
+	int16_t e_ads1;
+	int16_t e_ads2;
+	int16_t e_ina;
 
 	uint8_t checksum;
 } tel_t;
 
 typedef struct{
 	struct{
-		uint32_t press;
-		int16_t temp;
+		int32_t press;
+		int32_t temp;
 	}bmp[STAT_BUFF_S];
 
 	struct{
@@ -54,7 +59,12 @@ typedef struct{
 	}check;
 
 	struct{
-		uint32_t ads1:3,ads2:3,bmp:3,adxl:3,ds:3,ina:3;
+		int8_t ads1;
+		int8_t ads2;
+		int8_t bmp;
+		int8_t adxl;
+		int8_t ds;
+		int8_t ina;
 	}err;
 
 	struct{

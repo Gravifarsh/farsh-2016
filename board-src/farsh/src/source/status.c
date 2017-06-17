@@ -77,9 +77,10 @@ void comrade()
 
 void update_status()
 {
+	//ina_request();
 	bmp_request();
-	//ds_request();
-	//adxl_request();
+	ds_request();
+	adxl_request();
 	//ads_request();
 }
 
