@@ -4,8 +4,6 @@
 #include <math.h>
 #include <util/delay.h>
 #include <rscs/spi.h>
-
-//#include "../../librscs/rscs/spi.h"
 #include "../../librscs/rscs/error.h"
 #include "../adxl345.h"
 

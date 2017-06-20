@@ -116,8 +116,7 @@ void ds_request()
 
 		int16_t temp;
 		rscs_ds18b20_read_temperature(ds_desc,&temp);
-		rscs_ds18b20_count_temperature(ds_desc, temp);
-		status.ds[0].temp = temp; //TODO
+		status.ds[0].temp = (int16_t)(rscs_ds18b20_count_temperature(ds_desc, temp) * 100);
 		rscs_ds18b20_start_conversion(ds_desc);
 	}
 }
@@ -159,10 +158,10 @@ void get_pressnlight_normalized(uint32_t* press,uint16_t* light)
 	uint64_t p = 0,l = 0;
 	for(int i = 0; i < STAT_BUFF_S; i++)
 	{
-		p+=status.bmp[i].press;//TODO
+		p+=status.bmp[i].press;
 		for(int j = 0; j < 8; j++)
 		{
-			l += status.ads[0].lights[j];//TODO
+			l += status.ads[i].lights[j];
 		}
 	}
 	p /= STAT_BUFF_S;

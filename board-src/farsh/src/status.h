@@ -12,17 +12,17 @@ typedef struct {
 	int32_t press_b;
 	int32_t temp_b;
 	int16_t temp_ds;
-	uint16_t power;
+	uint16_t power_ina;
 	int16_t lights[8];
 	int16_t accelerations[3];
 	uint8_t servo_pos[3];
 
-	int16_t e_bmp;
-	int16_t e_ds;
-	int16_t e_adxl;
-	int16_t e_ads1;
-	int16_t e_ads2;
-	int16_t e_ina;
+	int8_t e_bmp;
+	int8_t e_ds;
+	int8_t e_adxl;
+	int8_t e_ads1;
+	int8_t e_ads2;
+	int8_t e_ina;
 
 	uint8_t checksum;
 } tel_t;

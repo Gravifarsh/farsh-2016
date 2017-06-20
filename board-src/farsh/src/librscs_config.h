@@ -93,11 +93,11 @@
 // Настройки ONE_WIRE - модуля взаимодействия по ONEWIRE шине
 // ========================================================
 // Регистр PORT на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_PORT (PORTC)
+#define RSCS_ONEWIRE_REG_PORT (PORTA)
 // Регистр PIN на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_PIN  (PINC)
+#define RSCS_ONEWIRE_REG_PIN  (PINA)
 // Регистр DDR на котором расположен пин onewire шины
-#define RSCS_ONEWIRE_REG_DDR  (DDRC)
+#define RSCS_ONEWIRE_REG_DDR  (DDRA)
 // Битовая маска, задающая тот самый пин на порту
 #define RSCS_ONEWIRE_PIN_MASK (1 << 2)
 
@@ -125,9 +125,8 @@
 
 #elif defined __AVR_ATmega128__
 
-#define RSCS_SERVO_PORT (PORTA)
-#define RSCS_SERVO_PORT_DDR (DDRA)
-// TODO: Посмотреть в даташите
+#define RSCS_SERVO_PORT (PORTC)
+#define RSCS_SERVO_PORT_DDR (DDRC)
 #endif
 
 

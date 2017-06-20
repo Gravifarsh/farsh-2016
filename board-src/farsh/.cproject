@@ -52,7 +52,7 @@
 								<option id="de.innot.avreclipse.linker.option.libpath.1070537966" name="Libraries Path (-L)" superClass="de.innot.avreclipse.linker.option.libpath"/>
 								<option id="de.innot.avreclipse.linker.option.libs.1808533662" name="Libraries (-l)" superClass="de.innot.avreclipse.linker.option.libs"/>
 								<option id="de.innot.avreclipse.linker.option.nosyms.1771267837" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.linker.option.nosyms" value="false" valueType="boolean"/>
-								<option id="de.innot.avreclipse.linker.option.otherlinkargs.293901540" superClass="de.innot.avreclipse.linker.option.otherlinkargs" value="-Wl,-u,vfprintf -lprintf_flt -lm -Wl,--gc-sections" valueType="string"/>
+								<option id="de.innot.avreclipse.linker.option.otherlinkargs.293901540" name="Other Arguments" superClass="de.innot.avreclipse.linker.option.otherlinkargs" value="-Wl,-u,vfprintf -lprintf_flt -lm -Wl,--gc-sections" valueType="string"/>
 								<inputType id="de.innot.avreclipse.tool.linker.input.523449324" name="OBJ Files" superClass="de.innot.avreclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

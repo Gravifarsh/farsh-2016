@@ -37,7 +37,8 @@ int init_uart_stdout()
 	rscs_uart_set_parity(uart1, RSCS_UART_PARITY_NONE);
 	rscs_uart_set_stop_bits(uart1, RSCS_UART_STOP_BITS_ONE);
 
-	stdout = rscs_make_uart_stream(uart1);
+	stdin = stdout = rscs_make_uart_stream(uart1);
+
 
 	return 0;
 }
@@ -62,15 +63,24 @@ int init_uart_radio()
 void comrade()
 {
 	char val;
-	if(rscs_uart_read_some(uart1, &val,1) == 1)
+	while(1)
 	{
+		scanf("%c", &val);
 		switch(val){
-			case 'P':
-				rscs_uart_read(uart1, &status.check.p_k,sizeof(status.check.p_k));
-				break;
-			case 'L':
-				rscs_uart_read(uart1, &status.check.l_k,sizeof(status.check.l_k));
-				break;
+			case 'S':
+			{
+				int ang;
+				scanf("%d", &ang);
+				rscs_servo_set_angle(0, ang);
+			}
+			break;
+			case 'M':
+			{
+				int mcs;
+				scanf("%d", &mcs);
+				_servo_set_mcs(2, mcs);
+			}
+			break;
 		}
 	}
 }
@@ -78,10 +88,10 @@ void comrade()
 void update_status()
 {
 	//ina_request();
-	bmp_request();
-	ds_request();
-	adxl_request();
-	//ads_request();
+	//bmp_request();
+	//ds_request();
+	//adxl_request();
+	ads_request();
 }
 
 void send_packet()
@@ -99,7 +109,7 @@ void send_packet()
 	packet.press_b = status.bmp[0].press;
 	packet.temp_b = status.bmp[0].temp;
 	packet.temp_ds = status.ds[0].temp;
-	packet.power = status.ina[0].power;
+	packet.power_ina = status.ina[0].power;
 
 	packet.e_ads1 = status.err.ads1;
 	packet.e_ads2 = status.err.ads2;
