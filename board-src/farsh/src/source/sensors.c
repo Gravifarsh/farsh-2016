@@ -41,7 +41,11 @@ void ina_init()
 {
 	if(!ina_desc){ina_desc = rscs_ina219_init(0x40);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
 
-	rscs_ina219_set_cal(ina_desc, 50, 100);
+	rscs_ina219_set_cal(ina_desc, 4096);
+	uint16_t temp = 0;
+	temp |= (1<<INA_BADC2) | (1<<INA_BADC1)
+				| (1<<INA_SADC2) | (1<<INA_SADC1)
+				| (1<<PG0) | (1<<PG1);
 	rscs_ina219_start_continuous(ina_desc,RSCS_INA219_CHANNEL_SHUNT);
 }
 
@@ -84,7 +88,64 @@ void ina_request()
 		status.ina[i - 1] = status.ina[i];
 	}
 
-	rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &status.ina[0].power);//TODO
+	rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &status.ina[0].power);
+
+	/*uint16_t temp;
+	printf("\n============================\n");
+
+	printf("%d", rscs_ina219_start_single(ina_desc, RSCS_INA219_CHANNEL_BUS));
+	printf("%d\n", rscs_ina219_wait_single(ina_desc));
+	printf("%d 0x00:", rscs_ina_read_reg(ina_desc, 0x00, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x01:", rscs_ina_read_reg(ina_desc, 0x01, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x02:", rscs_ina_read_reg(ina_desc, 0x02, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x03:", rscs_ina_read_reg(ina_desc, 0x03, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x04:", rscs_ina_read_reg(ina_desc, 0x04, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x05:", rscs_ina_read_reg(ina_desc, 0x05, &temp));
+	printf(" %u\n", temp);
+	printf("%d", rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_BUS, &temp));
+	printf(" %u;\n ", temp);
+	printf("--------------------------\n");
+
+	printf("%d", rscs_ina219_start_single(ina_desc, RSCS_INA219_CHANNEL_SHUNT));
+	printf("%d\n", rscs_ina219_wait_single(ina_desc));
+	printf("%d 0x00:", rscs_ina_read_reg(ina_desc, 0x00, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x01:", rscs_ina_read_reg(ina_desc, 0x01, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x02:", rscs_ina_read_reg(ina_desc, 0x02, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x03:", rscs_ina_read_reg(ina_desc, 0x03, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x04:", rscs_ina_read_reg(ina_desc, 0x04, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x05:", rscs_ina_read_reg(ina_desc, 0x05, &temp));
+	printf(" %u\n", temp);
+	printf("%d", rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &temp));
+	printf(" %u; \n", temp);
+	printf("--------------------------\n");
+
+	printf("%d", rscs_ina219_start_single(ina_desc, RSCS_INA219_CHANNEL_POWER));
+	printf("%d\n", rscs_ina219_wait_single(ina_desc));
+	printf("%d 0x00:", rscs_ina_read_reg(ina_desc, 0x00, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x01:", rscs_ina_read_reg(ina_desc, 0x01, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x02:", rscs_ina_read_reg(ina_desc, 0x02, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x03:", rscs_ina_read_reg(ina_desc, 0x03, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x04:", rscs_ina_read_reg(ina_desc, 0x04, &temp));
+	printf(" %u\n", temp);
+	printf("%d 0x05:", rscs_ina_read_reg(ina_desc, 0x05, &temp));
+	printf(" %u\n", temp);
+	printf("%d", rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_POWER, &temp));
+	printf(" %u;\n ", temp);
+	printf("--------------------------\n");*/
 }
 
 void bmp_request()

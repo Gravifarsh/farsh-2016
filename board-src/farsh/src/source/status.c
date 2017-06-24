@@ -19,7 +19,7 @@ status_t status = {
 };
 
 tel_t packet = {
-		.marker = 0xFAFA,
+		.marker = 0xFAFCFAFD,
 		.number = 0
 };
 
@@ -87,10 +87,10 @@ void comrade()
 
 void update_status()
 {
-	//ina_request();
-	//bmp_request();
-	//ds_request();
-	//adxl_request();
+	ina_request();
+	bmp_request();
+	ds_request();
+	adxl_request();
 	ads_request();
 }
 
@@ -117,6 +117,8 @@ void send_packet()
 	packet.e_bmp = status.err.bmp;
 	packet.e_ds = status.err.ds;
 	packet.e_ina = status.err.ina;
-	packet.checksum = rscs_crc8(&packet, sizeof(packet));
-	rscs_uart_write(radio_uart,&status,sizeof(packet));
+
+	packet.checksum = rscs_crc8(&packet, sizeof(packet) - 1);
+	//rscs_uart_write(radio_uart,&packet,sizeof(packet));
+	rscs_uart_write(uart1,&packet,sizeof(packet));
 }

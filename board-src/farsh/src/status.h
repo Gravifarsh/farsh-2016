@@ -5,9 +5,10 @@
 
 #define STAT_BUFF_S 5
 
+#pragma pack(push, 1)
 typedef struct {
-	uint16_t marker;
-	uint16_t number;
+	uint32_t marker;
+	uint32_t number;
 
 	int32_t press_b;
 	int32_t temp_b;
@@ -26,6 +27,8 @@ typedef struct {
 
 	uint8_t checksum;
 } tel_t;
+#pragma pack(pop)
+
 
 typedef struct{
 	struct{
