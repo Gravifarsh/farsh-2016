@@ -92,6 +92,7 @@ void update_status()
 	ds_request();
 	adxl_request();
 	ads_request();
+	status.time = rscs_time_get();
 }
 
 void send_packet()
@@ -110,6 +111,7 @@ void send_packet()
 	packet.temp_b = status.bmp[0].temp;
 	packet.temp_ds = status.ds[0].temp;
 	packet.power_ina = status.ina[0].power;
+	packet.time = status.time;
 
 	packet.e_ads1 = status.err.ads1;
 	packet.e_ads2 = status.err.ads2;

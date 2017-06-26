@@ -19,6 +19,7 @@
 #include <rscs/bmp280.h>
 #include <rscs/ds18b20.h>
 #include <rscs/spi.h>
+#include <rscs/timeservice.h>
 
 #include "adxl345.h"
 

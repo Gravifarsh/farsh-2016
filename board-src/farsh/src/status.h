@@ -17,6 +17,7 @@ typedef struct {
 	int16_t lights[8];
 	int16_t accelerations[3];
 	uint8_t servo_pos[3];
+	uint32_t time;
 
 	int8_t e_bmp;
 	int8_t e_ds;
@@ -81,6 +82,8 @@ typedef struct{
 		MODE_FLYING,
 		MODE_LANDED
 	}mode;
+
+	uint32_t time;
 }status_t;
 
 int init_uart_radio();

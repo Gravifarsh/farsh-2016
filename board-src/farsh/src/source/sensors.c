@@ -85,67 +85,10 @@ void ina_request()
 
 	for(int i = STAT_BUFF_S - 1; i > 0; i--)
 	{
-		status.ina[i - 1] = status.ina[i];
+		status.ina[i] = status.ina[i - 1];
 	}
 
 	rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &status.ina[0].power);
-
-	/*uint16_t temp;
-	printf("\n============================\n");
-
-	printf("%d", rscs_ina219_start_single(ina_desc, RSCS_INA219_CHANNEL_BUS));
-	printf("%d\n", rscs_ina219_wait_single(ina_desc));
-	printf("%d 0x00:", rscs_ina_read_reg(ina_desc, 0x00, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x01:", rscs_ina_read_reg(ina_desc, 0x01, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x02:", rscs_ina_read_reg(ina_desc, 0x02, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x03:", rscs_ina_read_reg(ina_desc, 0x03, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x04:", rscs_ina_read_reg(ina_desc, 0x04, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x05:", rscs_ina_read_reg(ina_desc, 0x05, &temp));
-	printf(" %u\n", temp);
-	printf("%d", rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_BUS, &temp));
-	printf(" %u;\n ", temp);
-	printf("--------------------------\n");
-
-	printf("%d", rscs_ina219_start_single(ina_desc, RSCS_INA219_CHANNEL_SHUNT));
-	printf("%d\n", rscs_ina219_wait_single(ina_desc));
-	printf("%d 0x00:", rscs_ina_read_reg(ina_desc, 0x00, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x01:", rscs_ina_read_reg(ina_desc, 0x01, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x02:", rscs_ina_read_reg(ina_desc, 0x02, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x03:", rscs_ina_read_reg(ina_desc, 0x03, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x04:", rscs_ina_read_reg(ina_desc, 0x04, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x05:", rscs_ina_read_reg(ina_desc, 0x05, &temp));
-	printf(" %u\n", temp);
-	printf("%d", rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &temp));
-	printf(" %u; \n", temp);
-	printf("--------------------------\n");
-
-	printf("%d", rscs_ina219_start_single(ina_desc, RSCS_INA219_CHANNEL_POWER));
-	printf("%d\n", rscs_ina219_wait_single(ina_desc));
-	printf("%d 0x00:", rscs_ina_read_reg(ina_desc, 0x00, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x01:", rscs_ina_read_reg(ina_desc, 0x01, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x02:", rscs_ina_read_reg(ina_desc, 0x02, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x03:", rscs_ina_read_reg(ina_desc, 0x03, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x04:", rscs_ina_read_reg(ina_desc, 0x04, &temp));
-	printf(" %u\n", temp);
-	printf("%d 0x05:", rscs_ina_read_reg(ina_desc, 0x05, &temp));
-	printf(" %u\n", temp);
-	printf("%d", rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_POWER, &temp));
-	printf(" %u;\n ", temp);
-	printf("--------------------------\n");*/
 }
 
 void bmp_request()
@@ -154,7 +97,7 @@ void bmp_request()
 
 	for(int i = STAT_BUFF_S - 1; i > 0; i--)
 	{
-		status.bmp[i - 1] = status.bmp[i];
+		status.bmp[i] = status.bmp[i - 1];
 	}
 
 	int32_t rtemp,rpress,temp,press;
@@ -172,7 +115,7 @@ void ds_request()
 	{
 		for(int i = STAT_BUFF_S - 1; i > 0; i--)
 		{
-			status.ds[i - 1] = status.ds[i];
+			status.ds[i] = status.ds[i - 1];
 		}
 
 		int16_t temp;
@@ -188,7 +131,7 @@ void adxl_request()
 
 	for(int i = STAT_BUFF_S - 1; i > 0; i--)
 	{
-		status.adxl[i - 1] = status.adxl[i];
+		status.adxl[i] = status.adxl[i - 1];
 	}
 
 	int16_t x,y,z;
@@ -205,7 +148,7 @@ void ads_request()
 
 	for(int i = STAT_BUFF_S - 1; i > 0; i--)
 	{
-		status.ads[i - 1] = status.ads[i];
+		status.ads[i] = status.ads[i - 1];
 	}
 
 	for(int i = 0; i < 4; i++){

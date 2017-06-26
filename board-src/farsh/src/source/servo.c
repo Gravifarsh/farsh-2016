@@ -2,11 +2,23 @@
 #include "sensors.h"
 #include "servo.h"
 
-#define DELTA 10
+#define DELTA 30
+
+int min(int a, int b)
+{
+	if(a > b) return b;
+	return a;
+}
+
+int abs(int a)
+{
+	if(a > 0) return a;
+	return -a;
+}
 
 void servo_oriantate()
 {
-	/*ads_request();
+	ads_request();
 	int32_t res[8];
 	double x=0, y=0;
 	res[0] = status.ads[0].lights[3];
@@ -23,33 +35,31 @@ void servo_oriantate()
 		y += res[i] * sin(i * 45 * 3.14159265359 / 180);
 	}
 	status.servo.pos[0] = atan(y / x) * 180 / 3.14159265359 + 90;
-	rscs_servo_set_angle(0,status.servo.pos[0]);*/
+	rscs_servo_set_angle(0,status.servo.pos[0]);
 
 	int delta;
-
 	while(1)
 	{
-		delta = fmin(180 - status.servo.pos[1], DELTA);
+		delta = min(180 - status.servo.pos[1], DELTA);
 		ina_request();
 		rscs_servo_set_angle(1,status.servo.pos[1] + delta);
 		rscs_servo_set_angle(2,status.servo.pos[2] - delta);
 		_delay_ms(100);
 		ina_request();
-
-		if(fabs(status.ina[0].power) <= fabs(status.ina[1].power || delta < DELTA))
+		if((abs(status.ina[0].power) <= abs(status.ina[1].power)) ||( delta < DELTA))
 		{
 			rscs_servo_set_angle(1,status.servo.pos[1]);
 			rscs_servo_set_angle(2,status.servo.pos[2]);
 
 			while(1)
 			{
-				delta = fmin(180 - status.servo.pos[1], DELTA);
+				delta = min(status.servo.pos[1], DELTA);
 				ina_request();
 				rscs_servo_set_angle(1,status.servo.pos[1] - delta);
 				rscs_servo_set_angle(2,status.servo.pos[2] + delta);
 				_delay_ms(100);
 				ina_request();
-				if(fabs(status.ina[0].power) <= fabs(status.ina[1].power || delta < DELTA))
+				if((abs(status.ina[0].power) <= abs(status.ina[1].power)) ||( delta < DELTA))
 				{
 					rscs_servo_set_angle(1,status.servo.pos[1]);
 					rscs_servo_set_angle(2,status.servo.pos[2]);
