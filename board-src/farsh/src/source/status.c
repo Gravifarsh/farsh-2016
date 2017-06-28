@@ -98,18 +98,18 @@ void update_status()
 void send_packet()
 {
 	packet.number++;
-	packet.accelerations[0] = status.adxl[0].x;
-	packet.accelerations[1] = status.adxl[0].y;
-	packet.accelerations[2] = status.adxl[0].z;
+	packet.accelerations[0] = status.adxl.x;
+	packet.accelerations[1] = status.adxl.y;
+	packet.accelerations[2] = status.adxl.z;
 	for(int i = 0; i < 8; i++){
-		packet.lights[i] = status.ads[0].lights[i];
+		packet.lights[i] = status.ads.lights[i];
 	}
 	for(int i = 0; i < 3; i++){
 		packet.servo_pos[i] = status.servo.pos[i];
 	}
 	packet.press_b = status.bmp[0].press;
 	packet.temp_b = status.bmp[0].temp;
-	packet.temp_ds = status.ds[0].temp;
+	packet.temp_ds = status.ds.temp;
 	packet.power_ina = status.ina[0].power;
 	packet.time = status.time;
 
@@ -123,4 +123,9 @@ void send_packet()
 	packet.checksum = rscs_crc8(&packet, sizeof(packet) - 1);
 	//rscs_uart_write(radio_uart,&packet,sizeof(packet));
 	rscs_uart_write(uart1,&packet,sizeof(packet));
+}
+
+void sd_write()
+{
+
 }

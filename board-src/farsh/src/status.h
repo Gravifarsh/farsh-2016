@@ -3,8 +3,6 @@
 
 #include "all_includes.h"
 
-#define STAT_BUFF_S 5
-
 #pragma pack(push, 1)
 typedef struct {
 	uint32_t marker;
@@ -35,32 +33,27 @@ typedef struct{
 	struct{
 		int32_t press;
 		int32_t temp;
-	}bmp[STAT_BUFF_S];
+	}bmp[2];
 
 	struct{
 		int16_t temp;
-	}ds[STAT_BUFF_S];
+	}ds;
 
 	struct{
 		int16_t x,y,z;
-	}adxl[STAT_BUFF_S];
+	}adxl;
 
 	struct{
 		int16_t lights[8];
-	}ads[STAT_BUFF_S];
+	}ads;
 
 	struct{
 		uint16_t power;
-	}ina[STAT_BUFF_S];
+	}ina[2];
 
 	struct{
-		uint32_t press;
-		uint16_t light;
-		uint32_t press_t;
-		uint16_t light_t;
-		float p_k;
-		float l_k;
-	}check;
+		uint8_t pos[3];
+	}servo;
 
 	struct{
 		int8_t ads1;
@@ -70,11 +63,6 @@ typedef struct{
 		int8_t ds;
 		int8_t ina;
 	}err;
-
-	struct{
-		uint8_t pos[3];
-		bool opened;
-	}servo;
 
 	enum{
 		MODE_STARTED,
@@ -90,6 +78,7 @@ int init_uart_radio();
 int init_uart_stdout();
 
 void send_packet();
+void sd_write();
 void update_status();
 void comrade();
 

@@ -27,7 +27,7 @@ void hardware_init()
 	rscs_servo_set_angle(2,90);
 	status.servo.pos[1] = status.servo.pos[2] = status.servo.pos[0] = 90;
 
-	//rscs_servo_timer_init();
+	rscs_servo_timer_init();
 
 	rscs_time_init();
 
@@ -38,67 +38,73 @@ void hardware_init()
 	ds_init();
 }
 
+void fire_raiser(){}
+
 int main()
 {
 	hardware_init();
-
-	while(1)
-	{
-		update_status();
-		send_packet();
-	}
 
 	while(0){//CHECKING TO GO IN TECHNO MODE GOES HERE TODO
 		comrade();
 	}
 
-	for(int i = 0; i < STAT_BUFF_S; i++){
-		update_status();
-	}
+	uint16_t Light,CurLight;
 
-	get_pressnlight_normalized(&status.check.press,&status.check.light);
+	get_light(&Light, 10);
 
-	uint32_t CheckingTime = status.time;
+	uint32_t CheckingTime = 0;
 
 	while(true)
 	{
 		update_status();
-		//send_packet();
-		switch(status.mode){
-			case MODE_STARTED:
-				get_pressnlight_normalized(&status.check.press_t,&status.check.light_t);
-				printf("%lu - %lu\n", status.time, CheckingTime);
+		send_packet();
 
-				if((status.time - CheckingTime) > 3000){ //CONDITION GOES HERE TODO
-					get_pressnlight_normalized(&status.check.press,&status.check.light);
+		switch(status.mode){
+			case MODE_STARTED:{
+				if(status.time >= 900000){
 					status.mode = MODE_IN_ROCKET;
-					printf("IN ROCKET NOW!");
+				}
+			}
+			break;
+
+			case MODE_IN_ROCKET:{
+				if(!CheckingTime){CheckingTime = status.time;}
+
+				get_light(&CurLight, 3); //idk какое n
+
+				if(status.time - CheckingTime > 5000)
+				{
+					status.mode = MODE_FLYING;
+					fire_raiser();
 				}
 
-				printf("%u %u\n",status.check.light_t, status.check.light);
-				if(status.check.light_t >= status.check.light)
+				if(CurLight <= Light * 0.8)
 				{
 					CheckingTime = status.time;
 				}
+			}
 			break;
 
-			case MODE_IN_ROCKET:
-				get_pressnlight_normalized(&status.check.press_t,&status.check.light_t);
-				if(true){ //CONDITION GOES HERE TODO
-					//FIRE-RAISER GOES HERE TODO
-					status.mode = MODE_FLYING;
-				}
-			break;
-
-			case MODE_FLYING:
-				get_pressnlight_normalized(&status.check.press_t,&status.check.light_t);
-				if(true){ //CONDITION GOES HERE TODO
+			case MODE_FLYING:{
+				if(get_bar_dheight() < 2)
+				{
 					status.mode = MODE_LANDED;
+					rscs_servo_set_angle(0,90);//TODO какой там угол?
 				}
-				break;
-			case MODE_LANDED:
+			}
+			break;
+
+			case MODE_LANDED:{
 				servo_oriantate();
-				break;
+				servo_scan(); //TODO Написать функцию
+			}
+			break;
+		}
+
+		if(status.time > 2400000 && status.mode != MODE_LANDED)
+		{
+			rscs_servo_set_angle(0,90);
+			status.mode = MODE_LANDED;
 		}
 	}
 	return 0;

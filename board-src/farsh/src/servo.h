@@ -8,5 +8,6 @@
 #include "status.h"
 
 void servo_oriantate();
+void servo_scan();
 
 #endif /* SERVO_H_ */

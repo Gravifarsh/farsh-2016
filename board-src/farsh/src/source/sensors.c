@@ -40,12 +40,11 @@ void ads_init()
 void ina_init()
 {
 	if(!ina_desc){ina_desc = rscs_ina219_init(0x40);}// А ВДРУГ УЖЕ ИНИЦИАЛИЗИРОВАЛЛИ?
-
-	rscs_ina219_set_cal(ina_desc, 4096);
-	uint16_t temp = 0;
-	temp |= (1<<INA_BADC2) | (1<<INA_BADC1)
+	uint16_t cfg = 0;
+	cfg |= (1<<INA_BADC2) | (1<<INA_BADC1)
 				| (1<<INA_SADC2) | (1<<INA_SADC1)
 				| (1<<PG0) | (1<<PG1);
+	rscs_ina219_set_cfg(ina_desc, cfg);
 	rscs_ina219_start_continuous(ina_desc,RSCS_INA219_CHANNEL_SHUNT);
 }
 
@@ -83,10 +82,7 @@ void ina_request()
 {
 	CHECKNTRY(ina_init, status.err.ina);
 
-	for(int i = STAT_BUFF_S - 1; i > 0; i--)
-	{
-		status.ina[i] = status.ina[i - 1];
-	}
+	status.ina[1] = status.ina[0];
 
 	rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &status.ina[0].power);
 }
@@ -95,10 +91,7 @@ void bmp_request()
 {
 	CHECKNTRY(bmp_init, status.err.bmp);
 
-	for(int i = STAT_BUFF_S - 1; i > 0; i--)
-	{
-		status.bmp[i] = status.bmp[i - 1];
-	}
+	status.bmp[1] = status.bmp[0];
 
 	int32_t rtemp,rpress,temp,press;
 	rscs_bmp280_read(bmp_desc,&rpress,&rtemp);
@@ -113,14 +106,9 @@ void ds_request()
 
 	if(rscs_ds18b20_check_ready())
 	{
-		for(int i = STAT_BUFF_S - 1; i > 0; i--)
-		{
-			status.ds[i] = status.ds[i - 1];
-		}
-
 		int16_t temp;
 		rscs_ds18b20_read_temperature(ds_desc,&temp);
-		status.ds[0].temp = (int16_t)(rscs_ds18b20_count_temperature(ds_desc, temp) * 100);
+		status.ds.temp = (int16_t)(rscs_ds18b20_count_temperature(ds_desc, temp) * 100);
 		rscs_ds18b20_start_conversion(ds_desc);
 	}
 }
@@ -129,16 +117,11 @@ void adxl_request()
 {
 	CHECKNTRY(adxl_init, status.err.adxl);
 
-	for(int i = STAT_BUFF_S - 1; i > 0; i--)
-	{
-		status.adxl[i] = status.adxl[i - 1];
-	}
-
 	int16_t x,y,z;
 	rscs_adxl345_read(adxl_desc,&x,&y,&z);
-	status.adxl[0].x = x;
-	status.adxl[0].y = y;
-	status.adxl[0].z = z;
+	status.adxl.x = x;
+	status.adxl.y = y;
+	status.adxl.z = z;
 }
 
 void ads_request()
@@ -146,30 +129,29 @@ void ads_request()
 	CHECKNTRY(_ads1_init, status.err.ads1);
 	CHECKNTRY(_ads2_init, status.err.ads2);
 
-	for(int i = STAT_BUFF_S - 1; i > 0; i--)
-	{
-		status.ads[i] = status.ads[i - 1];
-	}
-
 	for(int i = 0; i < 4; i++){
-		rscs_ads1115_take(ads.one, i + 4, status.ads[0].lights + i);//TODO
-		rscs_ads1115_take(ads.two, i + 4, status.ads[0].lights + i + 4);
+		rscs_ads1115_take(ads.one, i + 4, status.ads.lights + i);
+		rscs_ads1115_take(ads.two, i + 4, status.ads.lights + i + 4);
 	}
 }
 
-void get_pressnlight_normalized(uint32_t* press,uint16_t* light)
+void get_light(uint16_t* light, int n)
 {
-	uint64_t p = 0,l = 0;
-	for(int i = 0; i < STAT_BUFF_S; i++)
+	uint32_t res;
+	for(int i = 0; i < n; i++)
 	{
-		p+=status.bmp[i].press;
+		ads_request();
 		for(int j = 0; j < 8; j++)
 		{
-			l += status.ads[i].lights[j];
+			res += status.ads.lights[j];
 		}
+		res /= 8;
 	}
-	p /= STAT_BUFF_S;
-	l /= STAT_BUFF_S;
-	*press = p;
-	*light = l;
+	res /= n;
+}
+
+double get_bar_dheight()
+{
+	return 18400 * (1 + (status.bmp[0].temp + status.bmp[1].temp) * 0.00347 / 2)
+			* log(status.bmp[0].press / status.bmp[1].press); //проверить работоспосбность TODO
 }
