@@ -1,6 +1,7 @@
 #include "all_includes.h"
 #include "sensors.h"
 #include "servo.h"
+#include "sd.h"
 
 #define DELTA 30
 
@@ -90,17 +91,18 @@ void servo_oriantate()
 
 void servo_scan()
 {
-	for(int i = 0; i < 180; i += 30)
+	for(int i = 0; i < 180; i += 10)
 	{
 		rscs_servo_set_angle(0, i);
 		status.servo.pos[0] = i;
-		for(int j = 0; j < 180; j += 30)
+		for(int j = 0; j < 180; j += 10)
 		{
 			rscs_servo_set_angle(1, j);
 			rscs_servo_set_angle(2, 180 - j);
 			status.servo.pos[1] = j;
 			status.servo.pos[2] = 180 - j;
 
+			_delay_ms(100);
 			ina_request();
 
 			update_packet(PACKET_SCAN_SERVO);

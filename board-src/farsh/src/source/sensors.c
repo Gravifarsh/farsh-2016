@@ -139,7 +139,7 @@ void ads_request()
 
 void get_light(uint16_t* light, int n)
 {
-	uint32_t res;
+	uint32_t res = 0;
 	for(int i = 0; i < n; i++)
 	{
 		ads_request();
@@ -150,10 +150,11 @@ void get_light(uint16_t* light, int n)
 		res /= 8;
 	}
 	res /= n;
+	*light = res;
 }
 
 double get_bar_dheight()
 {
 	return 18400 * (1 + (status.bmp[0].temp + status.bmp[1].temp) * 0.00347 / 2)
-			* log(status.bmp[0].press / status.bmp[1].press); //проверить работоспосбность TODO
+			* log((float)status.bmp[0].press / (float)status.bmp[1].press); //проверить работоспосбность TODO
 }
