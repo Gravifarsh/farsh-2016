@@ -2,6 +2,7 @@
 #include "sensors.h"
 #include "status.h"
 #include "servo.h"
+#include "sd.h"
 
 void hardware_init()
 {
@@ -31,6 +32,8 @@ void hardware_init()
 
 	rscs_time_init();
 
+	sd_start();
+
 	ina_init();
 	ads_init();
 	bmp_init();
@@ -50,14 +53,18 @@ int main()
 
 	uint16_t Light,CurLight;
 
-	get_light(&Light, 10);
+	//get_light(&Light, 10);
 
 	uint32_t CheckingTime = 0;
 
 	while(true)
 	{
 		update_status();
+		update_packet(PACKET_STANDART);
 		send_packet();
+		sd_write();
+
+		printf("%d %d %d\n", status.adxl.x, status.adxl.y, status.adxl.z);
 
 		switch(status.mode){
 			case MODE_STARTED:{

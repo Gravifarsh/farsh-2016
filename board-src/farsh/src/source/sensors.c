@@ -85,6 +85,8 @@ void ina_request()
 	status.ina[1] = status.ina[0];
 
 	rscs_ina219_read(ina_desc, RSCS_INA219_CHANNEL_SHUNT, &status.ina[0].power);
+
+	status.ina[0].power *= 10;
 }
 
 void bmp_request()

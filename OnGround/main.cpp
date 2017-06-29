@@ -8,28 +8,28 @@ using namespace std;
 
 #pragma pack(push, 1)
 typedef struct {
-    uint32_t marker;
-    uint32_t number;
+	uint32_t marker;
+	uint32_t number;
 
-    int32_t press_b;
-    int32_t temp_b;
-    int16_t temp_ds;
-    uint16_t power_ina;
-    int16_t lights[8];
-    int16_t accelerations[3];
-    uint8_t servo_pos[3];
+	int32_t press_b;
+	int32_t temp_b;
+	int16_t temp_ds;
+	uint16_t power_ina;
+	int16_t lights[8];
+	int16_t accelerations[3];
+	uint8_t servo_pos[3];
+	uint32_t time;
 
-    int8_t e_bmp;
-    int8_t e_ds;
-    int8_t e_adxl;
-    int8_t e_ads1;
-    int8_t e_ads2;
-    int8_t e_ina;
+	int8_t e_bmp;
+	int8_t e_ds;
+	int8_t e_adxl;
+	int8_t e_ads1;
+	int8_t e_ads2;
+	int8_t e_ina;
 
-    uint8_t checksum;
+	uint8_t checksum;
 } tel_t;
 #pragma pack(pop)
-
 const uint8_t crc8_table[] = {
     0x00, 0x5e, 0xbc, 0xe2, 0x61, 0x3f, 0xdd, 0x83, 0xc2, 0x9c, 0x7e, 0x20, 0xa3, 0xfd, 0x1f, 0x41,
     0x9d, 0xc3, 0x21, 0x7f, 0xfc, 0xa2, 0x40, 0x1e, 0x5f, 0x01, 0xe3, 0xbd, 0x3e, 0x60, 0x82, 0xdc,
@@ -69,7 +69,7 @@ uint8_t crc8(const void * data_ptr, size_t data_size)
 
 int main()
 {
-    ifstream iFile("cutecom3.log", ios::binary);
+    ifstream iFile("telemetry.log", ios::binary);
     ofstream oFile("out.csv", ios::out | std::ios::trunc);
 
     int count = 0;
@@ -106,7 +106,8 @@ int main()
                 	oFile<<packet.accelerations[i]<<';';
                 for(int i = 0; i < 3; i++)
                     oFile<<(int)packet.servo_pos[i]<<';';
-                oFile<<(int)packet.e_bmp<<';'<<(int)packet.e_ds<<';'
+
+                oFile<<(int)packet.time<<';'<<(int)packet.e_bmp<<';'<<(int)packet.e_ds<<';'
                 		<<(int)packet.e_adxl<<';'<<(int)packet.e_ads1<<';'
                 		<<(int)packet.e_ads2<<';'<<(int)packet.e_ina<<';'<<endl;
             }

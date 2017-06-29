@@ -95,37 +95,65 @@ void update_status()
 	status.time = rscs_time_get();
 }
 
-void send_packet()
+void update_packet(packet_mode mode)
 {
 	packet.number++;
-	packet.accelerations[0] = status.adxl.x;
-	packet.accelerations[1] = status.adxl.y;
-	packet.accelerations[2] = status.adxl.z;
-	for(int i = 0; i < 8; i++){
-		packet.lights[i] = status.ads.lights[i];
-	}
-	for(int i = 0; i < 3; i++){
-		packet.servo_pos[i] = status.servo.pos[i];
-	}
-	packet.press_b = status.bmp[0].press;
-	packet.temp_b = status.bmp[0].temp;
-	packet.temp_ds = status.ds.temp;
-	packet.power_ina = status.ina[0].power;
-	packet.time = status.time;
 
-	packet.e_ads1 = status.err.ads1;
-	packet.e_ads2 = status.err.ads2;
-	packet.e_adxl = status.err.adxl;
-	packet.e_bmp = status.err.bmp;
-	packet.e_ds = status.err.ds;
-	packet.e_ina = status.err.ina;
+	switch(mode){
+		case PACKET_STANDART:
+			packet.accelerations[0] = status.adxl.x;
+			packet.accelerations[1] = status.adxl.y;
+			packet.accelerations[2] = status.adxl.z;
+			for(int i = 0; i < 8; i++){
+				packet.lights[i] = status.ads.lights[i];
+			}
+			for(int i = 0; i < 3; i++){
+				packet.servo_pos[i] = status.servo.pos[i];
+			}
+			packet.press_b = status.bmp[0].press;
+			packet.temp_b = status.bmp[0].temp;
+			packet.temp_ds = status.ds.temp;
+			packet.power_ina = status.ina[0].power;
+			packet.time = status.time;
 
+			packet.e_ads1 = status.err.ads1;
+			packet.e_ads2 = status.err.ads2;
+			packet.e_adxl = status.err.adxl;
+			packet.e_bmp = status.err.bmp;
+			packet.e_ds = status.err.ds;
+			packet.e_ina = status.err.ina;
+
+			break;
+		case PACKET_SCAN_SERVO:
+			packet.accelerations[0] = 0;
+			packet.accelerations[1] = 0;
+			packet.accelerations[2] = 0;
+			for(int i = 0; i < 8; i++){
+				packet.lights[i] = 0;
+			}
+			for(int i = 0; i < 3; i++){
+				packet.servo_pos[i] = status.servo.pos[i];
+			}
+			packet.press_b = 0;
+			packet.temp_b = 0;
+			packet.temp_ds = 0;
+			packet.power_ina = status.ina[0].power;
+			packet.time = 0;
+
+			packet.e_ads1 = 0;
+			packet.e_ads2 = 0;
+			packet.e_adxl = 0;
+			packet.e_bmp = 0;
+			packet.e_ds = 0;
+			packet.e_ina = 0;
+
+			break;
+	}
 	packet.checksum = rscs_crc8(&packet, sizeof(packet) - 1);
-	//rscs_uart_write(radio_uart,&packet,sizeof(packet));
-	rscs_uart_write(uart1,&packet,sizeof(packet));
 }
 
-void sd_write()
+void send_packet()
 {
-
+	//rscs_uart_write(radio_uart,&packet,sizeof(packet));
+	rscs_uart_write(uart1,&packet,sizeof(packet));
 }

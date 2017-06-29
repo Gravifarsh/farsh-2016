@@ -20,6 +20,7 @@
 #include <rscs/ds18b20.h>
 #include <rscs/spi.h>
 #include <rscs/timeservice.h>
+#include <rscs/sdcard.h>
 
 #include "adxl345.h"
 

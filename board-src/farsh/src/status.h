@@ -74,11 +74,16 @@ typedef struct{
 	uint32_t time;
 }status_t;
 
+typedef enum{
+	PACKET_STANDART,
+	PACKET_SCAN_SERVO
+}packet_mode;
+
 int init_uart_radio();
 int init_uart_stdout();
 
 void send_packet();
-void sd_write();
+void update_packet(packet_mode);
 void update_status();
 void comrade();
 
