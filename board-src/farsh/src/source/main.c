@@ -39,25 +39,48 @@ void hardware_init()
 	ds_init();
 
 	sd_start();
-
-	DDRA |= (1<<3);
 }
 
-void fire_raiser(){}
+void fire_raiser(uint32_t time){
+	DDRA |= (1<<3);
+	if(status.time - time < 20000)
+	PORTA |= (1<<3);
+	else
+	PORTA &= ~(1<<3);
+}
+
+void tehno()
+{
+	DDRA &= ~(1<<0);
+	PORTA |= (1<<0);
+
+	_delay_ms(100);
+
+	if(!(PINA & (1<<0))){
+		DDRA |= (1<<1);
+		PORTA &= ~(1<<1);
+
+		DDRG |= (1<<3);
+		while(1){
+			PORTG |= (1<<3);
+			_delay_ms(1000);
+			PORTG &= ~(1<<3);
+			_delay_ms(1000);
+		}
+	}
+}
 
 int main()
 {
-	hardware_init();
+	tehno();
 
-	while(0){//CHECKING TO GO IN TECHNO MODE GOES HERE TODO
-		comrade();
-	}
+	hardware_init();
 
 	uint16_t Light,CurLight;
 
 	get_light(&Light, 10);
 
-	uint32_t CheckingCycles = 0;
+	uint32_t CheckingCycles = 0, FireTime = 0;
 
 	while(true)
 	{
@@ -69,7 +92,6 @@ int main()
 		switch(status.mode){
 			case MODE_STARTED:{
 				if(status.time >= 30000){
-					printf("IN ROCKET\n");
 					status.mode = MODE_IN_ROCKET;
 				}
 			}
@@ -80,9 +102,9 @@ int main()
 
 				if(CheckingCycles > 3)
 				{
-					printf("FLYING\n");
+					FireTime = status.time;
+					fire_raiser(FireTime);
 					status.mode = MODE_FLYING;
-					fire_raiser();
 				}
 
 				if(CurLight <= Light * 0.9)
@@ -97,6 +119,8 @@ int main()
 			break;
 
 			case MODE_FLYING:{
+				fire_raiser(FireTime);
+
 				if(get_bar_dheight() < 2)
 				{
 					CheckingCycles++;
@@ -105,9 +129,9 @@ int main()
 				{
 					CheckingCycles = 0;
 				}
+
 				if(CheckingCycles > 5)
 				{
-					printf("LANDED\n");
 					status.mode = MODE_LANDED;
 					rscs_servo_timer_init();
 					rscs_servo_set_angle(0,30);

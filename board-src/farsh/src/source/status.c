@@ -61,31 +61,6 @@ int init_uart_radio()
 	return 0;
 }
 
-void comrade()
-{
-	char val;
-	while(1)
-	{
-		scanf("%c", &val);
-		switch(val){
-			case 'S':
-			{
-				int ang;
-				scanf("%d", &ang);
-				rscs_servo_set_angle(0, ang);
-			}
-			break;
-			case 'M':
-			{
-				int mcs;
-				scanf("%d", &mcs);
-				_servo_set_mcs(2, mcs);
-			}
-			break;
-		}
-	}
-}
-
 void update_status()
 {
 	ina_request();

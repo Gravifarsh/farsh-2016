@@ -87,7 +87,6 @@ int init_uart_stdout();
 void send_packet();
 void update_packet(packet_mode);
 void update_status();
-void comrade();
 
 extern status_t status;
 extern tel_t packet;
