@@ -88,7 +88,7 @@ int main()
         uint32_t MarkerFinder;
         iFile.seekg(pos);
         iFile.read((char*)&MarkerFinder, sizeof(MarkerFinder));
-        cout<<"MARKER FINDER IS "<<hex<<MarkerFinder<<dec<<endl;
+        //cout<<"MARKER FINDER IS "<<hex<<MarkerFinder<<dec<<endl;
         if(MarkerFinder == Marker){
         	iFile.seekg(pos);
             cout<<"MARKER OCCURED: TRYING TO READ PACKET..."<<endl;

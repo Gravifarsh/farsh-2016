@@ -10,8 +10,8 @@ void hardware_init()
 
 	rscs_time_init();
 
-	//init_uart_radio();
-	init_uart_stdout();
+	init_uart_radio();
+	//init_uart_stdout();
 
 	rscs_spi_init();
 	rscs_spi_set_clk(1000);
@@ -43,7 +43,7 @@ void hardware_init()
 
 void fire_raiser(uint32_t time){
 	DDRA |= (1<<3);
-	if(status.time - time < 20000)
+	if(status.time - time < 10000)
 	PORTA |= (1<<3);
 	else
 	PORTA &= ~(1<<3);
@@ -91,14 +91,14 @@ int main()
 
 		switch(status.mode){
 			case MODE_STARTED:{
-				if(status.time >= 30000){
+				if(status.time >= 2000000){
 					status.mode = MODE_IN_ROCKET;
 				}
 			}
 			break;
 
 			case MODE_IN_ROCKET:{
-				get_light(&CurLight, 3); //idk какое n
+				get_light(&CurLight, 3);
 
 				if(CheckingCycles > 3)
 				{
@@ -121,7 +121,7 @@ int main()
 			case MODE_FLYING:{
 				fire_raiser(FireTime);
 
-				if(get_bar_dheight() < 2)
+				if(get_bar_dheight() < 0.5)
 				{
 					CheckingCycles++;
 				}
@@ -130,7 +130,7 @@ int main()
 					CheckingCycles = 0;
 				}
 
-				if(CheckingCycles > 5)
+				if(CheckingCycles > 15)
 				{
 					status.mode = MODE_LANDED;
 					rscs_servo_timer_init();
@@ -140,8 +140,9 @@ int main()
 			break;
 
 			case MODE_LANDED:{
+				fire_raiser(FireTime);
 				servo_oriantate();
-				if((uint32_t)(status.time / 60000) % 5 ==0) servo_scan();
+				if((uint32_t)(status.time / 60000) % 10 ==0) servo_scan();
 			}
 			break;
 		}

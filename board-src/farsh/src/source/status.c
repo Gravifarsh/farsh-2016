@@ -127,7 +127,7 @@ void update_packet(packet_mode mode)
 
 			break;
 	}
-	packet.checksum = rscs_crc8(&packet, sizeof(packet) - 1);
+	packet.checksum = rscs_crc8(&packet, sizeof(packet) - sizeof(packet.checksum));
 }
 
 void send_packet()
