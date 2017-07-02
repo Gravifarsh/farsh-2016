@@ -15,7 +15,8 @@ status_t status = {
 		.err.ads1 = 0,
 		.err.ads2 = 0,
 		.err.adxl = 0,
-		.err.ina = 0
+		.err.ina = 0,
+		.err.sd = 0
 };
 
 tel_t packet = {
@@ -122,6 +123,7 @@ void update_packet(packet_mode mode)
 			packet.e_bmp = status.err.bmp;
 			packet.e_ds = status.err.ds;
 			packet.e_ina = status.err.ina;
+			packet.e_sd = status.err.sd;
 
 			break;
 		case PACKET_SCAN_SERVO:
@@ -146,6 +148,7 @@ void update_packet(packet_mode mode)
 			packet.e_bmp = 0;
 			packet.e_ds = 0;
 			packet.e_ina = 0;
+			packet.e_sd = 0;
 
 			break;
 	}

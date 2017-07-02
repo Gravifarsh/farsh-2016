@@ -20,12 +20,12 @@ ads_t ads={
 void _ads1_init()
 {
 	WADDUP(rscs_ads1115_set_range(ads.one, RSCS_ADS1115_RANGE_6DOT144), status.err.ads1);
-	WADDUP(rscs_ads1115_set_datarate(ads.one, RSCS_ADS1115_DATARATE_32SPS), status.err.ads2);
+	WADDUP(rscs_ads1115_set_datarate(ads.one, RSCS_ADS1115_DATARATE_860SPS), status.err.ads2);
 }
 void _ads2_init()
 {
 	WADDUP(rscs_ads1115_set_range(ads.two, RSCS_ADS1115_RANGE_6DOT144), status.err.ads1);
-	WADDUP(rscs_ads1115_set_datarate(ads.two, RSCS_ADS1115_DATARATE_32SPS), status.err.ads2);
+	WADDUP(rscs_ads1115_set_datarate(ads.two, RSCS_ADS1115_DATARATE_860SPS), status.err.ads2);
 }
 
 void ads_init()
@@ -155,6 +155,5 @@ void get_light(uint16_t* light, int n)
 
 double get_bar_dheight()
 {
-	return 18400 * (1 + (status.bmp[0].temp + status.bmp[1].temp) * 0.00347 / 2)
-			* log((float)status.bmp[0].press / (float)status.bmp[1].press); //проверить работоспосбность TODO
+	return 44300 * (1 - pow((float)status.bmp[1].press / (float)status.bmp[0].press, 0.19029495718363465)); //проверить работоспосбность TODO
 }

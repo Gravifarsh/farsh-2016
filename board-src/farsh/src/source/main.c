@@ -6,39 +6,41 @@
 
 void hardware_init()
 {
-
 	sei();
+
+	rscs_time_init();
 
 	//init_uart_radio();
 	init_uart_stdout();
 
 	rscs_spi_init();
+	rscs_spi_set_clk(1000);
+	rscs_spi_set_order(RSCS_SPI_ORDER_MSB_FIRST);
 	rscs_spi_set_pol(RSCS_SPI_POL_SETUP_FALL_SAMPLE_RISE);
+
 	rscs_i2c_init();
 	rscs_i2c_set_scl_rate(100);
 	rscs_ow_init_bus();
 
 	rscs_servo_init(3);
 	rscs_servo_calibrate(0, 1.8, 2.4);
-	rscs_servo_calibrate(1, 1.05, 1.85);
-	rscs_servo_calibrate(2, 1.05, 1.85);
+	rscs_servo_calibrate(1, 0.6, 2.4);
+	rscs_servo_calibrate(2, 0.6, 2.4);
 
-	rscs_servo_set_angle(0, 180);
+	rscs_servo_set_angle(0, 90);
 	rscs_servo_set_angle(1, 90);
 	rscs_servo_set_angle(2,90);
 	status.servo.pos[1] = status.servo.pos[2] = status.servo.pos[0] = 90;
-
-	rscs_servo_timer_init();
-
-	rscs_time_init();
-
-	sd_start();
 
 	ina_init();
 	ads_init();
 	bmp_init();
 	adxl_init();
 	ds_init();
+
+	sd_start();
+
+	DDRA |= (1<<3);
 }
 
 void fire_raiser(){}
@@ -53,9 +55,9 @@ int main()
 
 	uint16_t Light,CurLight;
 
-	//get_light(&Light, 10);
+	get_light(&Light, 10);
 
-	uint32_t CheckingTime = 0;
+	uint32_t CheckingCycles = 0;
 
 	while(true)
 	{
@@ -64,30 +66,32 @@ int main()
 		send_packet();
 		sd_write();
 
-		printf("%d %d %d\n", status.adxl.x, status.adxl.y, status.adxl.z);
-
 		switch(status.mode){
 			case MODE_STARTED:{
-				if(status.time >= 900000){
+				if(status.time >= 30000){
+					printf("IN ROCKET\n");
 					status.mode = MODE_IN_ROCKET;
 				}
 			}
 			break;
 
 			case MODE_IN_ROCKET:{
-				if(!CheckingTime){CheckingTime = status.time;}
-
 				get_light(&CurLight, 3); //idk какое n
 
-				if(status.time - CheckingTime > 5000)
+				if(CheckingCycles > 3)
 				{
+					printf("FLYING\n");
 					status.mode = MODE_FLYING;
 					fire_raiser();
 				}
 
-				if(CurLight <= Light * 0.8)
+				if(CurLight <= Light * 0.9)
 				{
-					CheckingTime = status.time;
+					CheckingCycles = 0;
+				}
+				else
+				{
+					CheckingCycles++;
 				}
 			}
 			break;
@@ -95,15 +99,25 @@ int main()
 			case MODE_FLYING:{
 				if(get_bar_dheight() < 2)
 				{
+					CheckingCycles++;
+				}
+				else
+				{
+					CheckingCycles = 0;
+				}
+				if(CheckingCycles > 5)
+				{
+					printf("LANDED\n");
 					status.mode = MODE_LANDED;
-					rscs_servo_set_angle(0,90);//TODO какой там угол?
+					rscs_servo_timer_init();
+					rscs_servo_set_angle(0,30);
 				}
 			}
 			break;
 
 			case MODE_LANDED:{
 				servo_oriantate();
-				servo_scan(); //TODO Написать функцию
+				if((uint32_t)(status.time / 60000) % 5 ==0) servo_scan();
 			}
 			break;
 		}

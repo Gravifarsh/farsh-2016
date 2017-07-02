@@ -23,6 +23,7 @@ typedef struct {
 	int8_t e_ads1;
 	int8_t e_ads2;
 	int8_t e_ina;
+	int8_t e_sd;
 
 	uint8_t checksum;
 } tel_t;
@@ -62,6 +63,7 @@ typedef struct{
 		int8_t adxl;
 		int8_t ds;
 		int8_t ina;
+		int8_t sd;
 	}err;
 
 	enum{

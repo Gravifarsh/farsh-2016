@@ -17,17 +17,27 @@ buffer_t buf;
 
 rscs_sdcard_t* sd_desc;
 
-rscs_e sd_start()
+
+void sd_setup_back()
+{
+	rscs_spi_set_clk(1000);
+	rscs_spi_set_order(RSCS_SPI_ORDER_MSB_FIRST);
+	rscs_spi_set_pol(RSCS_SPI_POL_SETUP_FALL_SAMPLE_RISE);
+}
+
+void sd_start()
 {
 	sd_desc = rscs_sd_init(&DDRB, &PORTB, (1 << 6));
 
 	buf.carret = 0;
 	buf.block = 0;
 
-	return rscs_sd_startup(sd_desc);
+	status.err.sd = rscs_sd_startup(sd_desc);
+
+	sd_setup_back();
 }
 
-rscs_e sd_write()
+void sd_write()
 {
 	if(512 - buf.carret > sizeof(packet))
 	{
@@ -35,8 +45,6 @@ rscs_e sd_write()
 		{
 			buf.buffer[buf.carret++] = *((uint8_t*)&packet + i);
 		}
-
-		return RSCS_E_NONE;
 	}
 	else
 	{
@@ -46,18 +54,20 @@ rscs_e sd_write()
 			buf.buffer[buf.carret++] = *((uint8_t*)&packet + i);
 		}
 
-		rscs_e er = rscs_sd_block_write(sd_desc, buf.block, &buf.buffer, 1);
+		rscs_sd_spi_setup();
+		status.err.sd = rscs_sd_block_write(sd_desc, buf.block, &buf.buffer, 1);
+		sd_setup_back();
 
-		if(er) return er;
 
-		buf.block++;
+		buf.block+=512;
 		buf.carret = 0;
 
-		for(int i = last; i < sizeof(packet); i++)
+		if(!status.err.sd)
 		{
-			buf.buffer[buf.carret++] = *((uint8_t*)&packet + i);
+			for(int i = last; i < sizeof(packet); i++)
+			{
+				buf.buffer[buf.carret++] = *((uint8_t*)&packet + i);
+			}
 		}
-
-		return RSCS_E_NONE;
 	}
 }

@@ -26,6 +26,7 @@ typedef struct {
 	int8_t e_ads1;
 	int8_t e_ads2;
 	int8_t e_ina;
+	int8_t e_sd;
 
 	uint8_t checksum;
 } tel_t;
@@ -109,7 +110,8 @@ int main()
 
                 oFile<<(int)packet.time<<';'<<(int)packet.e_bmp<<';'<<(int)packet.e_ds<<';'
                 		<<(int)packet.e_adxl<<';'<<(int)packet.e_ads1<<';'
-                		<<(int)packet.e_ads2<<';'<<(int)packet.e_ina<<';'<<endl;
+                		<<(int)packet.e_ads2<<';'<<(int)packet.e_ina<<';'
+                		<<(int)packet.e_sd<<endl;
             }
             else
             {

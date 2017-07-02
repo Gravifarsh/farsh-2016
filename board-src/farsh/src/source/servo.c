@@ -106,8 +106,8 @@ void servo_scan()
 			ina_request();
 
 			update_packet(PACKET_SCAN_SERVO);
-			send_packet();
-			sd_write();
+			//send_packet();
+			//sd_write();
 		}
 	}
 }

@@ -11,8 +11,8 @@
 #include "all_includes.h"
 #include "status.h"
 
-rscs_e sd_start();
+void sd_start();
 
-rscs_e sd_write();
+void sd_write();
 
 #endif /* SD_H_ */
